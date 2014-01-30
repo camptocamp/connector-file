@@ -27,12 +27,25 @@ class file_import_backend(orm.Model):
 
     """File Import Backend."""
 
+    _name = "file.import.backend"
+    _description = 'File Import Backend'
+    _inherit = "connector.backend"
     _backend_type = "file_import"
 
-    _inherit = "connector.backend"
-    _name = "file.import.backend"
+    def _select_versions(self, cr, uid, context=None):
+        """Return available versions. Can be inherited to add custom ones."""
+        return [('1', '1')]
+
     _columns = {
+        'version': fields.selection(
+            _select_versions,
+            string='Version',
+            required=True),
         'company_id': fields.many2one('res.company', 'Company'),
         'file_regexp': fields.char('File regexp'),
         'user_id': fields.many2one('res.users', 'User'),
+    }
+
+    _defaults = {
+        'version': '1',
     }
