@@ -8,10 +8,6 @@
             <field name="arch" type="xml">
                 <form string="File Import Backend" version="7.0">
                     <header>
-                      <button name="synchronize_metadata"
-                        type="object"
-                        class="oe_highlight"
-                        string="Synchronize Metadata"/>
                     </header>
                     <sheet>
                         <label for="name" class="oe_edit_only"/>
