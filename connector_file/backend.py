@@ -24,5 +24,5 @@
 from openerp.addons.connector import backend
 
 
-file_backend = backend.Backend('file_import')
-file_backend_1 = backend.Backend(parent=file_backend, version="1")
+file_import = backend.Backend('file_import')
+file_import_1 = backend.Backend(parent=file_import, version="1")

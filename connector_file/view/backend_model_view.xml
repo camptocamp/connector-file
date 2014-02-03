@@ -4,7 +4,7 @@
 
         <record id="view_file_backend_form" model="ir.ui.view">
             <field name="name">file.backend.form</field>
-            <field name="model">file.import.backend</field>
+            <field name="model">file_import.backend</field>
             <field name="arch" type="xml">
                 <form string="File Import Backend" version="7.0">
                     <header>
@@ -64,7 +64,7 @@
 
         <record id="view_file_backend_tree" model="ir.ui.view">
             <field name="name">view.file.backend.tree</field>
-            <field name="model">file.import.backend</field>
+            <field name="model">file_import.backend</field>
             <field name="arch" type="xml">
                 <tree string="File Import Backend" version="7.0">
                     <field name="name"/>
@@ -74,7 +74,7 @@
 
         <record id="action_file_import_backend" model="ir.actions.act_window">
             <field name="name">File Import Backends</field>
-            <field name="res_model">file.import.backend</field>
+            <field name="res_model">file_import.backend</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_file_backend_tree"/>

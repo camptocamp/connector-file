@@ -22,12 +22,14 @@
 
 from openerp.osv import orm, fields
 
+from openerp.addons.connector.session import ConnectorSession
+
 
 class file_import_backend(orm.Model):
 
     """File Import Backend."""
 
-    _name = "file.import.backend"
+    _name = "file_import.backend"
     _description = 'File Import Backend'
     _inherit = "connector.backend"
     _backend_type = "file_import"
@@ -42,10 +44,19 @@ class file_import_backend(orm.Model):
             string='Version',
             required=True),
         'company_id': fields.many2one('res.company', 'Company'),
-        'file_regexp': fields.char('File regexp'),
+        'file_regexp': fields.char('File regexp', size=64),
+        'single_file_name': fields.char('Single File Name', size=64),
         'user_id': fields.many2one('res.users', 'User'),
     }
 
     _defaults = {
         'version': '1',
     }
+
+    def import_one_file(self, cr, uid, ids, context=None):
+        """Imports a single file specified in the backend."""
+        session = ConnectorSession(cr, uid, context=context)
+        import pdb;pdb.set_trace()
+#        for current in self.browse(cr, uid, ids, context=context):
+#            direct_sync_users(session, current.id)
+        return ids

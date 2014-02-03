@@ -23,6 +23,20 @@
 from openerp.osv import orm, fields
 
 
+class file_chunk(orm.Model):
+
+    """File Chunk."""
+
+    _name = 'file.chunk'
+
+    _description = 'File Chunk'
+
+    _columns = {
+        'name': fields.char('Name'),
+        'line_start': fields.integer('Line Start'),
+    }
+
+
 class file_chunk_binding(orm.Model):
 
     """File Chunk Binding."""
@@ -42,8 +56,13 @@ class file_chunk_binding(orm.Model):
             ondelete='restrict'
         ),
         'backend_id': fields.many2one(
-            'file_backend.backend',
+            'file_import.backend',
             'File Exchange Backend',
+            required=True,
+            ondelete='restrict'),
+        'chunk_id': fields.many2one(
+            'file.chunk',
+            'Related File Chunk',
             required=True,
             ondelete='restrict'),
         }
@@ -53,17 +72,3 @@ class file_chunk_binding(orm.Model):
 
     _sql_constraints = [
     ]
-
-
-class file_chunk(orm.Model):
-
-    """File Chunk."""
-
-    _name = 'file.chunk'
-
-    _description = 'File Chunk Binding'
-
-    _columns = {
-        'name': fields.char('Name'),
-        'line_start': fields.integer('Line Start'),
-    }
