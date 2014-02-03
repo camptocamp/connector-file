@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_file_backend_form" model="ir.ui.view">
+            <field name="name">file.backend.form</field>
+            <field name="model">file.import.backend</field>
+            <field name="arch" type="xml">
+                <form string="File Import Backend" version="7.0">
+                    <header>
+                      <button name="synchronize_metadata"
+                        type="object"
+                        class="oe_highlight"
+                        string="Synchronize Metadata"/>
+                    </header>
+                    <sheet>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" class="oe_inline" />
+                        </h1>
+                        <group string="File Import Configuration">
+                            <group colspan="4" col="4">
+                                <field name="company_id"/>
+                                <field name="user_id"/>
+                                <field name="file_regexp"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="import" string="Imports">
+                                <p class="oe_grey oe_inline">
+                                    By clicking on the buttons,
+                                    you will initiate the synchronizations
+                                    with CSV Files.
+                                    Note that the import or exports
+                                    won't be done directly,
+                                    they will create 'Jobs'
+                                    executed as soon as possible.
+                                </p>
+                                <group>
+                                    <div>
+                                        <label string="Import from the file" class="oe_inline"/>
+                                        <field name="single_file_name"
+                                            class="oe_inline"
+                                            nolabel="1"/>
+                                    </div>
+                                    <button name="import_one_file"
+                                        type="object"
+                                        class="oe_highlight"
+                                        string="Import in background"/>
+                                </group>
+                            </page>
+
+                            <page name="advanced_configuration" string="Advanced Configuration">
+                                <group>
+                                </group>
+                            </page>
+
+
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_file_backend_tree" model="ir.ui.view">
+            <field name="name">view.file.backend.tree</field>
+            <field name="model">file.import.backend</field>
+            <field name="arch" type="xml">
+                <tree string="File Import Backend" version="7.0">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_file_import_backend" model="ir.actions.act_window">
+            <field name="name">File Import Backends</field>
+            <field name="res_model">file.import.backend</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_file_backend_tree"/>
+        </record>
+
+    <menuitem id="menu_connector_file_root"
+        parent="connector.menu_connector_root"
+        name="File Import"
+        sequence="10"
+        groups="connector.group_connector_manager"/>
+
+    <menuitem id="menu_connector_file_backend"
+        name="Backends"
+        parent="menu_connector_file_root"
+        action="action_file_import_backend"/>
+
+    </data>
+</openerp>
