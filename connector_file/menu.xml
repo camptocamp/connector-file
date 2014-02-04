@@ -19,5 +19,10 @@
         action="action_attachment_binding"
         parent="menu_connector_file_root"/>
 
+    <menuitem
+        id="menu_chunk_binding"
+        action="action_chunk_binding"
+        parent="menu_connector_file_root"/>
+
   </data>
 </openerp>

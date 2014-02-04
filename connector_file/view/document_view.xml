@@ -12,6 +12,10 @@
                         <field name="name"/>
                     </h1>
                     <group>
+                        <group string="Binding">
+                            <field name="backend_id"/>
+                            <field name="external_hash"/>
+                        </group>
                         <group string="Data">
                             <field name="type"/>
                             <field name="datas" filename="datas_fname" attrs="{'invisible':[('type','=','url')]}"/>

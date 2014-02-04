@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_chunk_binding_form" model="ir.ui.view">
+            <field name="model">file.chunk.binding</field>
+            <field name="arch" type="xml">
+                <form string="Chunk Bindings" version="7.0">
+                   <sheet>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <group string="Binding">
+                            <field name="backend_id"/>
+                        </group>
+                        <group string="Data">
+                            <field name="line_start"/>
+                        </group>
+                    </group>
+                  </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_chunk_binding_tree" model="ir.ui.view">
+            <field name="model">file.chunk.binding</field>
+            <field name="arch" type="xml">
+                <tree string="Chunk Bindings">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_chunk_binding_search" model="ir.ui.view">
+            <field name="model">file.chunk.binding</field>
+            <field name="arch" type="xml">
+                <search string="Chunk Bindings">
+                    <field name="name" string="Chunk Binding"/>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</openerp>
