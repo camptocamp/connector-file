@@ -60,11 +60,6 @@ class file_chunk_binding(orm.Model):
             'File Exchange Backend',
             required=True,
             ondelete='restrict'),
-        'chunk_id': fields.many2one(
-            'file.chunk',
-            'Related File Chunk',
-            required=True,
-            ondelete='restrict'),
         }
 
     _defaults = {
