@@ -55,6 +55,8 @@ class file_chunk(orm.Model):
         for this chunk from the original file, without header.
 
         """
+        # possible implementations: itertools.islice or linecache.
+        # probably islice.
         return NotImplementedError
 
 

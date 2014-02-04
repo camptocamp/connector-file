@@ -23,12 +23,16 @@
 import logging
 from openerp.addons.connector.queue.job import job
 from openerp.addons.connector.unit.synchronizer import ImportSynchronizer
+from ..backend import file_import
 from ..connector import get_environment
 
 _logger = logging.getLogger(__name__)
 
 
+@file_import
 class FileImportSynchronizer(ImportSynchronizer):
+
+    _model_name = ['']
 
     """Base importer for a file."""
 
