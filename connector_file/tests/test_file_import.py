@@ -33,7 +33,7 @@ class test_file_import(common.SingleTransactionCase):
     def setUp(self):
         """Initialize the test."""
         super(test_file_import, self).setUp()
-        self.backend_model = self.registry('file.import.backend')
+        self.backend_model = self.registry('file_import.backend')
         self.session = ConnectorSession(self.cr, self.uid)
         data_model = self.registry('ir.model.data')
         self.get_ref = partial(data_model.get_object_reference,

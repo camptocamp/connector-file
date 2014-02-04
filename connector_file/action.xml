@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="action_file_import_backend" model="ir.actions.act_window">
+            <field name="name">File Import Backends</field>
+            <field name="res_model">file_import.backend</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_file_backend_tree"/>
+        </record>
+
+    </data>
+</openerp>

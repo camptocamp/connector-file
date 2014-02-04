@@ -2,7 +2,7 @@
 <openerp>
   <data>
 
-    <menuitem id="menu_file_connector_root"
+    <menuitem id="menu_connector_file_root"
         parent="connector.menu_connector_root"
         name="File Import"
         groups="connector.group_connector_manager"/>

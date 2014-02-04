@@ -37,6 +37,8 @@ A way to import CSV files using the Openerp Connector.
     ],
     'data': [
         'view/backend_model_view.xml',
+        'action.xml',
+        'menu.xml',
         'security/ir.model.access.csv',
     ],
     'installable': True,
