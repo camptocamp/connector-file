@@ -47,6 +47,10 @@ class AttachmentBinding(orm.Model):
             required=True,
             ondelete='restrict'),
         'external_hash': fields.char('External Hash'),
+        'chunk_binding_ids': fields.related(
+            'file.chunk.binding',
+            'Chunk Bindings',
+        ),
     }
 
     _defaults = {

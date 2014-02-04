@@ -34,7 +34,28 @@ class file_chunk(orm.Model):
     _columns = {
         'name': fields.char('Name'),
         'line_start': fields.integer('Line Start'),
+        'line_stop': fields.integer('Line Stop'),
+        'prepared_header': fields.char('Prepared Header, JSON'),
+        'prepared_data': fields.char('Prepared Data, JSON'),
     }
+
+    def load_data(self):
+        """TODO. This will load the chunk using load().
+
+        Like load(), this returns a list of the ids of the created objects
+        and a list of error messages
+
+        """
+        raise NotImplementedError
+
+    def get_raw(self):
+        """TODO. Return the original raw data for this chunk from the file.
+
+        This will use the line_start e line_stop to get the raw data
+        for this chunk from the original file, without header.
+
+        """
+        return NotImplementedError
 
 
 class file_chunk_binding(orm.Model):
@@ -58,6 +79,11 @@ class file_chunk_binding(orm.Model):
         'backend_id': fields.many2one(
             'file_import.backend',
             'File Exchange Backend',
+            required=True,
+            ondelete='restrict'),
+        'attachment_binding_id': fields.many2one(
+            'ir.attachment.binding',
+            'File Binding',
             required=True,
             ondelete='restrict'),
         }
