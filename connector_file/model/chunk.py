@@ -44,7 +44,7 @@ class file_chunk_binding(orm.Model):
     _name = 'file.chunk.binding'
     _inherit = 'external.binding'
 
-    _inherits = {'file.chunk': 'chunk_id'}
+    _inherits = {'file.chunk': 'openerp_id'}
 
     _description = 'File Chunk Binding'
 

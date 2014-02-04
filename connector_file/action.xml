@@ -10,5 +10,14 @@
             <field name="view_id" ref="view_file_backend_tree"/>
         </record>
 
+        <record id="action_attachment_binding" model="ir.actions.act_window">
+            <field name="name">Attachment Bindings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ir.attachment.binding</field>
+            <field name="view_type">form</field>
+            <field name="view_id" eval="False"/>
+            <field name="search_view_id" ref="view_attachment_binding_search"/>
+        </record>
+
     </data>
 </openerp>

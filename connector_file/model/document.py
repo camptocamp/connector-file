@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-"""File."""
+"""Binding for file, aka attachment, aka document."""
 
 from openerp.osv import orm, fields
 
@@ -30,13 +30,13 @@ class AttachmentBinding(orm.Model):
     _name = 'ir.attachment.binding'
     _inherit = 'external.binding'
 
-    _inherits = {'file.chunk': 'attachment_id'}
+    _inherits = {'ir.attachment': 'openerp_id'}
 
-    _description = 'File Chunk Binding'
+    _description = 'File Attachment Binding'
 
     _columns = {
         'openerp_id': fields.many2one(
-            'file.chunk',
+            'ir.attachment',
             string='OpenERP Attachment',
             required=True,
             ondelete='restrict'

@@ -2,15 +2,22 @@
 <openerp>
   <data>
 
-    <menuitem id="menu_connector_file_root"
+    <menuitem
+        id="menu_connector_file_root"
         parent="connector.menu_connector_root"
         name="File Import"
         groups="connector.group_connector_manager"/>
 
-    <menuitem id="menu_connector_file_backend"
+    <menuitem
+        id="menu_connector_file_backend"
         name="Backends"
         parent="menu_connector_file_root"
         action="action_file_import_backend"/>
+
+    <menuitem
+        id="menu_attachment_binding"
+        action="action_attachment_binding"
+        parent="menu_connector_file_root"/>
 
   </data>
 </openerp>
