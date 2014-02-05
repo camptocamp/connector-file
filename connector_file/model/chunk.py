@@ -35,7 +35,6 @@ class file_chunk(orm.Model):
         'name': fields.char('Name'),
         'line_start': fields.integer('Line Start'),
         'line_stop': fields.integer('Line Stop'),
-        'prepared_header': fields.char('Prepared Header, JSON'),
         'prepared_data': fields.char('Prepared Data, JSON'),
     }
 
@@ -88,7 +87,12 @@ class file_chunk_binding(orm.Model):
             'File Binding',
             required=True,
             ondelete='restrict'),
-        }
+        'prepared_header': fields.related(
+            'attachment_binding_id',
+            'prepared_header',
+            'Prepared Header (JSON)',
+        ),
+    }
 
     _defaults = {
     }

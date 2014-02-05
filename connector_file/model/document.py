@@ -20,14 +20,19 @@
 ##############################################################################
 """Binding for file, aka attachment, aka document."""
 
+import cStringIO
+import contextlib
+import csv
+import simplejson
+
 from openerp.osv import orm, fields
 
 from openerp.addons.connector.session import ConnectorSession
 from openerp.addons.connector.queue.job import job
 
-from .connector import get_environment
+# from ..connector import get_environment
 
-from ..unit.backend_adapter import ParsePolicy
+# from ..unit.backend_adapter import ParsePolicy
 
 
 class AttachmentBinding(orm.Model):
@@ -54,6 +59,7 @@ class AttachmentBinding(orm.Model):
             required=True,
             ondelete='restrict'),
         'external_hash': fields.char('External Hash'),
+        'prepared_header': fields.char('Prepared Header, JSON'),
         'chunk_binding_ids': fields.one2many(
             'file.chunk.binding',
             'attachment_binding_id',
@@ -72,7 +78,21 @@ class AttachmentBinding(orm.Model):
         ),
     ]
 
-    def parse(self, cr, uid, ids, context=None):
+    def parse_sync(self, cr, uid, ids, context=None):
+        """Split in chunks, return true."""
+        session = ConnectorSession(cr, uid, context=context)
+        for attachment in self.browse(cr, uid, ids, context=context):
+            backend_id = attachment.backend_id.id
+            parse_attachment(
+                session,
+                self._name,
+                backend_id,
+                attachment.id
+            )
+
+        return True
+
+    def parse_async(self, cr, uid, ids, context=None):
         """Split in chunks, return true."""
         session = ConnectorSession(cr, uid, context=context)
         for attachment in self.browse(cr, uid, ids, context=context):
@@ -80,17 +100,89 @@ class AttachmentBinding(orm.Model):
 
             parse_attachment.delay(
                 session,
-                'ir.attachment.binding',
+                self._name,
                 backend_id,
                 attachment.id,
             )
         return True
 
+    def get_file_like(self, cr, uid, attachment_id, context=None):
+        """Return an open file-like object with the attachment content.
+
+        That can be implemented as a stringIO or as a real file.
+
+        """
+        if context is None:
+            context = {}
+        attachment = self.browse(cr, uid, attachment_id, context=context)
+
+        # this is weird, but correct: attachment.datas is base64 data
+        # represented by an unicode object.
+        # python 2 does encode('ascii') automatically but I prefer to
+        # make that more explicit.
+        file_like = cStringIO.StringIO(
+            attachment.datas.encode('ascii').decode('base64')
+        )
+
+        # in py2, a StringIO cannot be used in a 'with' context manager
+        # contextlib.closing is there just for that
+        return contextlib.closing(file_like)
+
 
 @job
-def parse_attachment(session, model_name, backend_id,
-                     attachment_binding_id):
-    """ Prepare a batch import of records from Magento """
-    env = get_environment(session, model_name, backend_id)
-    importer = env.get_connector_unit(ParsePolicy)
-    importer.run(attachment_binding_id)
+def parse_attachment(s, model_name, backend_id,
+                     attachment_b_id):
+    """Parse one attachment, and produces chunks.
+
+    I use some short variable names:
+    _b is the binding.
+    s is the session
+
+    """
+    # these should be configured in the ParsePolicy
+    delimiter = ';'
+    quotechar = '"'
+
+    # env = get_environment(s, model_name, backend_id)
+    # importer = env.get_connector_unit(ParsePolicy)
+    # importer.run(attachment_binding_id)
+    attachment_b_obj = s.pool[model_name]
+    chunk_b_obj = s.pool['file.chunk.binding']
+    # attachment_b = attachment_b_obj.browse(
+    #     s.cr,
+    #     s.uid,
+    #     attachment_b_id,
+    #     context=s.context
+    # )
+    with attachment_b_obj.get_file_like(
+        s.cr,
+        s.uid,
+        attachment_b_id,
+        context=s.context
+    ) as file_like:
+        chunk_list = []
+        line_start = 0
+        for line_no, line in enumerate(
+            csv.reader(file_like, delimiter=delimiter,
+                       quotechar=quotechar)):
+            if line == 0:
+                attachment_b_obj.write(s.cr, s.uid, [attachment_b_id], {
+                    'prepared_header': simplejson.dumps(line)
+                })
+            else:
+                # it is a move, not a move line: write a chunk and create a
+                # new one
+                if line[0]:
+                    # if we have a previous chunk, write it
+                    if chunk_list:
+                        chunk_b_obj.create(s.cr, s.uid, {
+                            'backend_id': backend_id,
+                            'attachment_binding_id': attachment_b_id,
+                            'prepared_data': simplejson.dumps(chunk_list),
+                            'line_start': line_start,
+                            'line_stop': line_no,
+                        }, context=s.context)
+                    line_start = line_no
+                    chunk_list = []
+                else:
+                    chunk_list.append(line)

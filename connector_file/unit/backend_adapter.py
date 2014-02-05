@@ -24,6 +24,7 @@ import logging
 from openerp.addons.connector.queue.job import job
 from openerp.addons.connector.unit.synchronizer import ImportSynchronizer
 from connector.unit.backend_adapter import BackendAdapter
+from ..backend import file_import
 from ..connector import get_environment
 
 _logger = logging.getLogger(__name__)
