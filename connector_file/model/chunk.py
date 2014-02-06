@@ -23,8 +23,12 @@
 import itertools
 import cStringIO
 import base64
+import simplejson as json
 
 from openerp.osv import orm, fields
+
+from openerp.addons.connector.session import ConnectorSession
+from openerp.addons.connector.queue.job import job
 
 
 class file_chunk(orm.Model):
@@ -104,6 +108,8 @@ class file_chunk_binding(orm.Model):
 
         Note that line numbers are 1-based, while islice is 0-based.
 
+        Return True
+
         """
         for chunk in self.browse(cr, uid, ids, context=context):
             chunk.attachment_binding_id.get_file_like()
@@ -118,3 +124,60 @@ class file_chunk_binding(orm.Model):
                 chunk.write({
                     'raw_data': base64.encodestring(raw_chunk_io.getvalue())
                 })
+        return True
+
+    def load_sync(self, cr, uid, ids, context=None):
+        """Load the chunk, return true."""
+        session = ConnectorSession(cr, uid, context=context)
+        for chunk in self.browse(cr, uid, ids, context=context):
+            backend_id = chunk.backend_id.id
+
+            load_chunk(
+                session,
+                self._name,
+                backend_id,
+                chunk.id
+            )
+
+        return True
+
+    def load_async(self, cr, uid, ids, context=None):
+        """Load the chunk, return true."""
+        session = ConnectorSession(cr, uid, context=context)
+        for chunk in self.browse(cr, uid, ids, context=context):
+            backend_id = chunk.backend_id.id
+
+            load_chunk.delay(
+                session,
+                self._name,
+                backend_id,
+                chunk.id,
+            )
+
+        return True
+
+
+@job
+def load_chunk(s, model_name, backend_id, chunk_b_id):
+    """Load a chunk.
+
+    I use some short variable names:
+    _b is the binding.
+    s is the session
+
+    """
+    move_obj = s.pool['account.move']
+    chunk_b_obj = s.pool[model_name]
+    chunk_b = chunk_b_obj.browse(s.cr, s.uid, chunk_b_id, context=s.context)
+    prepared_header = json.loads(chunk_b.prepared_header)
+    prepared_data = json.loads(chunk_b.prepared_data)
+    load_result = move_obj.load(
+        s.cr,
+        s.uid,
+        prepared_header,
+        prepared_data,
+        context=s.context,
+    )
+    print load_result
+    import pdb;pdb.set_trace()
+    pass
