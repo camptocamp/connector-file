@@ -161,13 +161,13 @@ def parse_attachment(s, model_name, backend_id,
         context=s.context
     ) as file_like:
 
-        enum_reader = enumerate(csv.reader(
+        reader = csv.reader(
             file_like,
             delimiter=delimiter,
-            quotechar=quotechar)
+            quotechar=quotechar
         )
 
-        header_list = enum_reader.next()[1]
+        header_list = reader.next()
         attachment_b_obj.write(s.cr, s.uid, [attachment_b_id], {
             'prepared_header': simplejson.dumps(header_list)
         })
@@ -175,7 +175,7 @@ def parse_attachment(s, model_name, backend_id,
         chunk_array = []
         line_start = 1
 
-        for line_no, line in enum_reader:
+        for line in reader:
             # it is a move, not a move line: write a chunk and create a
             # new one
             if line[0]:
@@ -187,9 +187,12 @@ def parse_attachment(s, model_name, backend_id,
                         'attachment_binding_id': attachment_b_id,
                         'prepared_data': simplejson.dumps(chunk_array),
                         'line_start': line_start,
-                        'line_stop': line_no,
+                        'line_stop': reader.line_num,
                     }, context=s.context)
-                line_start = line_no
+                # reader.line_num is not the same as enumerate(reader): a field
+                # could contain newlines. We use line_num because we then
+                # use it to recover lines from the original file.
+                line_start = reader.line_num
                 chunk_array = [line]
             else:
                 chunk_array.append(line)
@@ -202,5 +205,5 @@ def parse_attachment(s, model_name, backend_id,
                 'attachment_binding_id': attachment_b_id,
                 'prepared_data': simplejson.dumps(chunk_array),
                 'line_start': line_start,
-                'line_stop': line_no,
+                'line_stop': reader.line_num,
             }, context=s.context)
