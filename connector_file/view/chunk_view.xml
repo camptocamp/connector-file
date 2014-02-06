@@ -19,6 +19,11 @@
                             <field name="line_stop"/>
                             <field name="prepared_header"/>
                             <field name="prepared_data"/>
+                            <field name="raw_data"/>
+                            <button name="get_raw_button"
+                                type="object"
+                                class="oe_highlight"
+                                string="Get Raw Data"/>
                         </group>
                     </group>
                   </sheet>

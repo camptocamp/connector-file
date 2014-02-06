@@ -20,6 +20,10 @@
 ##############################################################################
 """Chunk of a file."""
 
+import itertools
+import cStringIO
+import base64
+
 from openerp.osv import orm, fields
 
 
@@ -34,9 +38,10 @@ class file_chunk(orm.Model):
     name_get = lambda self, cr, uid, ids, c: 'What shall we use as name_get?'
 
     _columns = {
-        'line_start': fields.integer('Line Start'),
-        'line_stop': fields.integer('Line Stop'),
+        'line_start': fields.integer('Line Start', help="1-based"),
+        'line_stop': fields.integer('Line Stop', help="1-based"),
         'prepared_data': fields.char('Prepared Data, JSON'),
+        'raw_data': fields.binary('Raw data, press button to update'),
     }
 
     def load_data(self):
@@ -47,17 +52,6 @@ class file_chunk(orm.Model):
 
         """
         raise NotImplementedError
-
-    def get_raw(self):
-        """TODO. Return the original raw data for this chunk from the file.
-
-        This will use the line_start e line_stop to get the raw data
-        for this chunk from the original file, without header.
-
-        """
-        # possible implementations: itertools.islice or linecache.
-        # probably islice.
-        return NotImplementedError
 
 
 class file_chunk_binding(orm.Model):
@@ -101,3 +95,26 @@ class file_chunk_binding(orm.Model):
 
     _sql_constraints = [
     ]
+
+    def get_raw_button(self, cr, uid, ids, context=None):
+        """Return the original raw data for this chunk from the file.
+
+        This will use the line_start e line_stop to get the raw data
+        for this chunk from the original file, without header.
+
+        Note that line numbers are 1-based, while islice is 0-based.
+
+        """
+        for chunk in self.browse(cr, uid, ids, context=context):
+            chunk.attachment_binding_id.get_file_like()
+            with chunk.attachment_binding_id.get_file_like() as file_like:
+                myslice = itertools.islice(
+                    file_like,
+                    chunk.line_start - 1,
+                    chunk.line_stop - 1
+                )
+                raw_chunk_io = cStringIO.StringIO()
+                raw_chunk_io.writelines(myslice)
+                chunk.write({
+                    'raw_data': base64.encodestring(raw_chunk_io.getvalue())
+                })

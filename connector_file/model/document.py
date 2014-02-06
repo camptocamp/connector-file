@@ -106,15 +106,19 @@ class AttachmentBinding(orm.Model):
             )
         return True
 
-    def get_file_like(self, cr, uid, attachment_id, context=None):
+    def get_file_like(self, cr, uid, ids, context=None):
         """Return an open file-like object with the attachment content.
 
         That can be implemented as a stringIO or as a real file.
 
+        ids is a list of one element, and not an integer: that way we can call
+        this method with no parameters from a browse_record object.
+
         """
+        assert len(ids) == 1, 'ids should be a list of one element'
         if context is None:
             context = {}
-        attachment = self.browse(cr, uid, attachment_id, context=context)
+        attachment = self.browse(cr, uid, ids[0], context=context)
 
         # this is weird, but correct: attachment.datas is base64 data
         # represented by an unicode object.
@@ -157,7 +161,7 @@ def parse_attachment(s, model_name, backend_id,
     with attachment_b_obj.get_file_like(
         s.cr,
         s.uid,
-        attachment_b_id,
+        [attachment_b_id],
         context=s.context
     ) as file_like:
 
