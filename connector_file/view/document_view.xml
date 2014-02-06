@@ -20,6 +20,7 @@
                                 class="oe_highlight"
                                 string="Parse this file into chunks"/>
                             <field name="chunk_binding_ids"/>
+                            <field name="prepared_header"/>
                         </group>
                         <group string="Data">
                             <field name="type"/>

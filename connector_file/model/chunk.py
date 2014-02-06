@@ -31,8 +31,9 @@ class file_chunk(orm.Model):
 
     _description = 'File Chunk'
 
+    name_get = lambda self, cr, uid, ids, c: 'What shall we use as name_get?'
+
     _columns = {
-        'name': fields.char('Name'),
         'line_start': fields.integer('Line Start'),
         'line_stop': fields.integer('Line Stop'),
         'prepared_data': fields.char('Prepared Data, JSON'),
@@ -90,7 +91,8 @@ class file_chunk_binding(orm.Model):
         'prepared_header': fields.related(
             'attachment_binding_id',
             'prepared_header',
-            'Prepared Header (JSON)',
+            type='char',
+            string='Prepared Header (JSON)',
         ),
     }
 

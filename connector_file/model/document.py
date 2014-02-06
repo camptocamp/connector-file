@@ -160,29 +160,47 @@ def parse_attachment(s, model_name, backend_id,
         attachment_b_id,
         context=s.context
     ) as file_like:
-        chunk_list = []
-        line_start = 0
-        for line_no, line in enumerate(
-            csv.reader(file_like, delimiter=delimiter,
-                       quotechar=quotechar)):
-            if line == 0:
-                attachment_b_obj.write(s.cr, s.uid, [attachment_b_id], {
-                    'prepared_header': simplejson.dumps(line)
-                })
+
+        enum_reader = enumerate(csv.reader(
+            file_like,
+            delimiter=delimiter,
+            quotechar=quotechar)
+        )
+
+        header_list = enum_reader.next()[1]
+        attachment_b_obj.write(s.cr, s.uid, [attachment_b_id], {
+            'prepared_header': simplejson.dumps(header_list)
+        })
+
+        chunk_array = []
+        line_start = 1
+
+        for line_no, line in enum_reader:
+            # it is a move, not a move line: write a chunk and create a
+            # new one
+            if line[0]:
+                # if we have a previous chunk, write it
+                # TODO duplicated code, maybe refactor
+                if chunk_array:
+                    chunk_b_obj.create(s.cr, s.uid, {
+                        'backend_id': backend_id,
+                        'attachment_binding_id': attachment_b_id,
+                        'prepared_data': simplejson.dumps(chunk_array),
+                        'line_start': line_start,
+                        'line_stop': line_no,
+                    }, context=s.context)
+                line_start = line_no
+                chunk_array = [line]
             else:
-                # it is a move, not a move line: write a chunk and create a
-                # new one
-                if line[0]:
-                    # if we have a previous chunk, write it
-                    if chunk_list:
-                        chunk_b_obj.create(s.cr, s.uid, {
-                            'backend_id': backend_id,
-                            'attachment_binding_id': attachment_b_id,
-                            'prepared_data': simplejson.dumps(chunk_list),
-                            'line_start': line_start,
-                            'line_stop': line_no,
-                        }, context=s.context)
-                    line_start = line_no
-                    chunk_list = []
-                else:
-                    chunk_list.append(line)
+                chunk_array.append(line)
+
+        # write the last chunk
+        # TODO duplicated code, maybe refactor
+        if chunk_array:
+            chunk_b_obj.create(s.cr, s.uid, {
+                'backend_id': backend_id,
+                'attachment_binding_id': attachment_b_id,
+                'prepared_data': simplejson.dumps(chunk_array),
+                'line_start': line_start,
+                'line_stop': line_no,
+            }, context=s.context)
