@@ -20,11 +20,11 @@
 ##############################################################################
 """Unit tests for the file connector."""
 
-from . import test_chunk
+from . import test_file_import
 
 fast_suite = [
 ]
 
 checks = [
-    test_chunk,
+#    test_file_import,
 ]
