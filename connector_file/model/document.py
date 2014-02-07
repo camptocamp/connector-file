@@ -211,3 +211,8 @@ def parse_attachment(s, model_name, backend_id,
                 'line_start': line_start,
                 'line_stop': reader.line_num,
             }, context=s.context)
+
+
+def split_data_in_chunks(data):
+    """Take a file-like object, and return chunk data."""
+    return iter([])
