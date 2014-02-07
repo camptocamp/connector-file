@@ -10,6 +10,7 @@
                     <group>
                         <group string="Binding">
                             <field name="backend_id"/>
+                            <field name="move_id"/>
                         </group>
                         <group string="Document Binding">
                             <field name="attachment_binding_id"/>

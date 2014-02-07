@@ -18,31 +18,13 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+"""Specific exceptions for the OpenERP File Import Connector."""
 
-{
-    'name': 'Connector for importing files',
-    'version': '0.1',
-    'category': 'Connector',
-    'author': 'Camptocamp',
-    'website': 'camptocamp.com',
-    'license': 'AGPL-3',
-    'description': """
-Connector File Import
-=====================
+from openerp.addons.connector.exception import FailedJobError
 
-A way to import CSV files using the Openerp Connector.
-""",
-    'depends': [
-        'connector',
-        'account',
-    ],
-    'data': [
-        'view/backend_model_view.xml',
-        'view/document_view.xml',
-        'view/chunk_view.xml',
-        'action.xml',
-        'menu.xml',
-        'security/ir.model.access.csv',
-    ],
-    'installable': True,
-}
+
+class MoveLoadFailedJobError(FailedJobError):
+
+    """This exception is raised if the load() of a move fails."""
+
+    pass

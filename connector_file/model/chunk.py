@@ -30,6 +30,8 @@ from openerp.osv import orm, fields
 from openerp.addons.connector.session import ConnectorSession
 from openerp.addons.connector.queue.job import job
 
+from ..exceptions import MoveLoadFailedJobError
+
 
 class file_chunk(orm.Model):
 
@@ -86,6 +88,9 @@ class file_chunk_binding(orm.Model):
             'File Binding',
             required=True,
             ondelete='restrict'),
+        'move_id': fields.many2one(
+            'account.move',
+            'Journal Entry'),
         'prepared_header': fields.related(
             'attachment_binding_id',
             'prepared_header',
@@ -159,13 +164,15 @@ class file_chunk_binding(orm.Model):
 
 @job
 def load_chunk(s, model_name, backend_id, chunk_b_id):
-    """Load a chunk.
+    """Load a chunk into an OpenERP Journal Entry."""
 
+    """
     I use some short variable names:
     _b is the binding.
     s is the session
 
     """
+
     move_obj = s.pool['account.move']
     chunk_b_obj = s.pool[model_name]
     chunk_b = chunk_b_obj.browse(s.cr, s.uid, chunk_b_id, context=s.context)
@@ -178,6 +185,16 @@ def load_chunk(s, model_name, backend_id, chunk_b_id):
         prepared_data,
         context=s.context,
     )
-    print load_result
-    import pdb;pdb.set_trace()
-    pass
+
+    assert not load_result['ids'] or len(load_result['ids']) <= 1, """
+        One chunk should always generate one move, or an error.
+        More than one should not happen.
+    """
+
+    if load_result['ids']:
+        chunk_b.write({'move_id': load_result['ids'][0]}, context=s.context)
+    else:
+        raise MoveLoadFailedJobError(
+            u'Error during load() of the account.move',
+            load_result['messages']
+        )
