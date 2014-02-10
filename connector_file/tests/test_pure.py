@@ -50,7 +50,8 @@ class TestSplitDataInChunks(TestParsePolicy):
 
         result = self.parse_policy._split_data_in_chunks(input_file)
 
-        self.assertEquals(list(result), [])
+        with self.assertRaises(StopIteration):
+            result.next()
 
     def test_only_header(self):
         """It should return no chunks with only a header."""
@@ -61,7 +62,8 @@ class TestSplitDataInChunks(TestParsePolicy):
 
         result = self.parse_policy._split_data_in_chunks(input_file)
 
-        self.assertEquals(list(result), [])
+        with self.assertRaises(StopIteration):
+            result.next()
 
     def test_realistic_header(self):
         """It should return no chunks with a realistic header."""
@@ -69,7 +71,8 @@ class TestSplitDataInChunks(TestParsePolicy):
         input_file = open(self._expand_path('header.csv'))
         result = self.parse_policy._split_data_in_chunks(input_file)
 
-        self.assertEquals(list(result), [])
+        with self.assertRaises(StopIteration):
+            result.next()
 
     def test_one_chunk(self):
         """It should return one chunk when given such a CSV."""
@@ -77,11 +80,8 @@ class TestSplitDataInChunks(TestParsePolicy):
         input_file = open(self._expand_path('one_chunk.csv'))
 
         result = self.parse_policy._split_data_in_chunks(input_file)
-        result_list = list(result)
 
-        self.assertEquals(1, len(result_list))
-
-        result_chunk = result_list[0]
+        result_chunk = result.next()
 
         self.assertItemsEqual([
             'line_start', 'line_stop', 'prepared_data'
@@ -94,39 +94,46 @@ class TestSplitDataInChunks(TestParsePolicy):
             result_chunk['prepared_data']
         )
 
+        with self.assertRaises(StopIteration):
+            result.next()
+
     def test_two_chunks(self):
         """It should return two chunks when given such a CSV."""
 
         input_file = open(self._expand_path('two_chunks.csv'))
 
         result = self.parse_policy._split_data_in_chunks(input_file)
-        result_list = list(result)
 
-        self.assertEquals(2, len(result_list))
+        result_chunk = result.next()
 
         # first chunk
         self.assertItemsEqual([
             'line_start', 'line_stop', 'prepared_data'
-        ], result_list[0].keys())
+        ], result_chunk.keys())
 
-        self.assertEquals(2, result_list[0]['line_start'])
-        self.assertEquals(8, result_list[0]['line_stop'])
+        self.assertEquals(2, result_chunk['line_start'])
+        self.assertEquals(8, result_chunk['line_stop'])
         self.assertEquals(
             self.expected_parsed_chunk,
-            result_list[0]['prepared_data']
+            result_chunk['prepared_data']
         )
+
+        result_chunk = result.next()
 
         # second chunk
         self.assertItemsEqual([
             'line_start', 'line_stop', 'prepared_data'
-        ], result_list[1].keys())
+        ], result_chunk.keys())
 
-        self.assertEquals(8, result_list[1]['line_start'])
-        self.assertEquals(13, result_list[1]['line_stop'])
+        self.assertEquals(8, result_chunk['line_start'])
+        self.assertEquals(13, result_chunk['line_stop'])
         self.assertEquals(
             self.expected_parsed_chunk_2,
-            result_list[1]['prepared_data']
+            result_chunk['prepared_data']
         )
+
+        with self.assertRaises(StopIteration):
+            result.next()
 
 
 class TestParseHeaderData(TestParsePolicy):
