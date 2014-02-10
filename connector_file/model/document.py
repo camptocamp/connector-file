@@ -154,7 +154,18 @@ def parse_attachment(s, model_name, backend_id,
         context=s.context
     )
 
-    for chunk_data in split_data_in_chunks(file_like):
+    attachment_b_obj.write(s.cr, s.uid, attachment_b_id, {
+        'prepared_header': parse_header_data(file_like),
+    })
+
+    file_like_2 = attachment_b_obj.get_file_like(
+        s.cr,
+        s.uid,
+        [attachment_b_id],
+        context=s.context
+    )
+
+    for chunk_data in split_data_in_chunks(file_like_2):
 
         chunk_data.update({
             'backend_id': backend_id,
@@ -211,3 +222,22 @@ def split_data_in_chunks(data):
                 'line_start': line_start,
                 'line_stop': reader.line_num + 1,
             }
+
+
+def parse_header_data(data, delimiter=';', quotechar='"'):
+    """Take a file-like object, and return JSON-parsed header."""
+
+    with data as file_like:
+
+        reader = csv.reader(
+            file_like,
+            delimiter=delimiter,
+            quotechar=quotechar
+        )
+
+        try:
+            raw_header = reader.next()
+        except StopIteration:
+            # empty file, we can also decide to raise here
+            return ''
+        return simplejson.dumps(raw_header)
