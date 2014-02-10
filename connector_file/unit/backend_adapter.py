@@ -41,6 +41,8 @@ class ParsePolicy(BackendAdapter):
         s = self.session
         attachment_b_obj = s.pool[self.model._name]
         chunk_b_obj = s.pool['file.chunk.binding']
+        attachment_b = s.browse(attachment_b_id)
+        backend_id = attachment_b.backend_id.id
 
         file_like = attachment_b_obj.get_file_like(
             s.cr,
@@ -64,6 +66,7 @@ class ParsePolicy(BackendAdapter):
 
             chunk_data.update({
                 'attachment_binding_id': attachment_b_id,
+                'backend_id': backend_id,
             })
 
             chunk_b_obj.create(s.cr, s.uid, chunk_data, context=s.context)

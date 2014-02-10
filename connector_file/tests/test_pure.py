@@ -3,9 +3,9 @@ import unittest2
 import contextlib
 from cStringIO import StringIO
 import textwrap
+from mock import Mock
 
-from ..model.document import split_data_in_chunks
-from ..model.document import parse_header_data
+from ..unit.backend_adapter import ParsePolicy
 
 
 class TestSplitDataInChunks(unittest2.TestCase):
@@ -19,14 +19,22 @@ class TestSplitDataInChunks(unittest2.TestCase):
 
     def _prep_data(self, string):
         """Return a file-like object from the trimmed string."""
+        # TODO factor out
         return contextlib.closing(StringIO(textwrap.dedent(string)))
+
+    def setUp(self):
+        """We do not need a real environment here."""
+        # TODO factor out
+        super(TestSplitDataInChunks, self).setUp()
+        env = Mock()
+        self.parse_policy = ParsePolicy(env)
 
     def test_empty_file(self):
         """An empty file should create no chunks."""
 
         input_file = self._prep_data("")
 
-        result = split_data_in_chunks(input_file)
+        result = self.parse_policy._split_data_in_chunks(input_file)
 
         self.assertEquals(list(result), [])
 
@@ -37,7 +45,7 @@ class TestSplitDataInChunks(unittest2.TestCase):
             header,of,any,kind
             """)
 
-        result = split_data_in_chunks(input_file)
+        result = self.parse_policy._split_data_in_chunks(input_file)
 
         self.assertEquals(list(result), [])
 
@@ -48,7 +56,7 @@ class TestSplitDataInChunks(unittest2.TestCase):
             ref;date;period_id;journal_id;"line_id/account_id";"line_id/partner_id";"line_id/name";"line_id/
             """)
 
-        result = split_data_in_chunks(input_file)
+        result = self.parse_policy._split_data_in_chunks(input_file)
 
         self.assertEquals(list(result), [])
 
@@ -64,7 +72,7 @@ class TestSplitDataInChunks(unittest2.TestCase):
             ;;;;X1000;"Bank";"Camptocamp";;;6.3;taxcode2
             ;;;;X1000;"Bank";"Camptocamp";;;-0;taxcode2""")
 
-        result = split_data_in_chunks(input_file)
+        result = self.parse_policy._split_data_in_chunks(input_file)
         result_list = list(result)
 
         self.assertEquals(1, len(result_list))
@@ -82,11 +90,17 @@ class TestSplitDataInChunks(unittest2.TestCase):
 
 class TestParseHeaderData(unittest2.TestCase):
 
-    """Test parse_header_data.
+    """Test _parse_header_data.
 
     These tests only use values and do not import openerp.
 
     """
+
+    def setUp(self):
+        """We do not need a real environment here."""
+        super(TestParseHeaderData, self).setUp()
+        env = Mock()
+        self.parse_policy = ParsePolicy(env)
 
     def _prep_data(self, string):
         """Return a file-like object from the trimmed string."""
@@ -98,7 +112,7 @@ class TestParseHeaderData(unittest2.TestCase):
 
         input_file = self._prep_data("")
 
-        result = parse_header_data(input_file)
+        result = self.parse_policy._parse_header_data(input_file)
 
         self.assertEquals('', result)
 
@@ -109,6 +123,6 @@ class TestParseHeaderData(unittest2.TestCase):
             ref;date;period_id;journal_id;"line_id/account_id";"line_id/partner_id";"line_id/name";"line_id/
             """)
 
-        result = parse_header_data(input_file)
+        result = self.parse_policy._parse_header_data(input_file)
 
         self.assertEquals(result, '["ref", "date", "period_id", "journal_id", "line_id/account_id", "line_id/partner_id", "line_id/name", "line_id/\\n"]')
