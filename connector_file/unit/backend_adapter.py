@@ -69,7 +69,8 @@ class ParsePolicy(BackendAdapter):
 
             chunk_b_obj.create(s.cr, s.uid, chunk_data, context=s.context)
 
-    def _split_data_in_chunks(self, data):
+    @staticmethod
+    def _split_data_in_chunks(data):
         """Take a file-like object, and return chunk data."""
 
         # these should be configured in the ParsePolicy
@@ -117,7 +118,8 @@ class ParsePolicy(BackendAdapter):
                     'line_stop': reader.line_num + 1,
                 }
 
-    def _parse_header_data(self, data, delimiter=';', quotechar='"'):
+    @staticmethod
+    def _parse_header_data(data, delimiter=';', quotechar='"'):
         """Take a file-like object, and return JSON-parsed header."""
 
         with data as file_like:
