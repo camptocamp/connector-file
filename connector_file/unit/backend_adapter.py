@@ -37,25 +37,23 @@ class ParsePolicy(BackendAdapter):
 
     def run(self, attachment_b_id):
         """Parse the attachment and split it into chunks."""
-        import pdb;pdb.set_trace()
         s = self.session
-        attachment_b_obj = s.pool[self.model._name]
         chunk_b_obj = s.pool['file.chunk.binding']
-        attachment_b = s.browse(attachment_b_id)
+        attachment_b = s.browse(self.model._name, attachment_b_id)
         backend_id = attachment_b.backend_id.id
 
-        file_like = attachment_b_obj.get_file_like(
+        file_like = self.model.get_file_like(
             s.cr,
             s.uid,
             [attachment_b_id],
             context=s.context
         )
 
-        attachment_b_obj.write(s.cr, s.uid, attachment_b_id, {
+        self.model.write(s.cr, s.uid, attachment_b_id, {
             'prepared_header': self._parse_header_data(file_like),
         })
 
-        file_like_2 = attachment_b_obj.get_file_like(
+        file_like_2 = self.model.get_file_like(
             s.cr,
             s.uid,
             [attachment_b_id],
