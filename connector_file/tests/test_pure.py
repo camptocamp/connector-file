@@ -8,26 +8,28 @@ from mock import Mock
 from ..unit.backend_adapter import ParsePolicy
 
 
-class TestSplitDataInChunks(unittest2.TestCase):
+class TestParsePolicy(unittest2.TestCase):
 
-    """Test the split and parse of a file in chunks.
+    """Parse Policy unit tests.
 
-    This test uses purely values, is independent from OpenERP (i.e. no import
-    openerp) and is very fast.
+    These tests are independent from OpenERP, and very fast.
 
     """
 
     def _prep_data(self, string):
         """Return a file-like object from the trimmed string."""
-        # TODO factor out
         return contextlib.closing(StringIO(textwrap.dedent(string)))
 
     def setUp(self):
         """We do not need a real environment here."""
-        # TODO factor out
-        super(TestSplitDataInChunks, self).setUp()
+        super(TestParsePolicy, self).setUp()
         env = Mock()
         self.parse_policy = ParsePolicy(env)
+
+
+class TestSplitDataInChunks(TestParsePolicy):
+
+    """Test the split and parse of a file in chunks."""
 
     def test_empty_file(self):
         """An empty file should create no chunks."""
@@ -88,24 +90,9 @@ class TestSplitDataInChunks(unittest2.TestCase):
         self.assertEquals('[["1728274", "2014-02-02", "02\\\\/2014", "Sales Journal - (test)", "X11001", "Bank", "Camptocamp", "", "37.8", "", ""], ["", "", "", "", "X1111", "Bank", "Camptocamp", "AA009", "", "31.5", "taxcode1"], ["", "", "", "", "X2001", "Bank", "Camptocamp", "AA001", "", "3.83", "taxcode1"], ["", "", "", "", "X2110", "Bank", "Camptocamp", "AA001", "3.83", "", "taxcode1"], ["", "", "", "", "X1000", "Bank", "Camptocamp", "", "", "6.3", "taxcode2"], ["", "", "", "", "X1000", "Bank", "Camptocamp", "", "", "-0", "taxcode2"]]', result_chunk['prepared_data'])
 
 
-class TestParseHeaderData(unittest2.TestCase):
+class TestParseHeaderData(TestParsePolicy):
 
-    """Test _parse_header_data.
-
-    These tests only use values and do not import openerp.
-
-    """
-
-    def setUp(self):
-        """We do not need a real environment here."""
-        super(TestParseHeaderData, self).setUp()
-        env = Mock()
-        self.parse_policy = ParsePolicy(env)
-
-    def _prep_data(self, string):
-        """Return a file-like object from the trimmed string."""
-        # TODO factor out
-        return contextlib.closing(StringIO(textwrap.dedent(string)))
+    """Test _parse_header_data."""
 
     def test_empty_file(self):
         """An empty file should return an empty string."""
