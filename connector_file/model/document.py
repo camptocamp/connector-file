@@ -143,27 +143,35 @@ def parse_attachment(s, model_name, backend_id,
     s is the session
 
     """
-    # these should be configured in the ParsePolicy
-    delimiter = ';'
-    quotechar = '"'
 
-    # env = get_environment(s, model_name, backend_id)
-    # importer = env.get_connector_unit(ParsePolicy)
-    # importer.run(attachment_binding_id)
     attachment_b_obj = s.pool[model_name]
     chunk_b_obj = s.pool['file.chunk.binding']
-    # attachment_b = attachment_b_obj.browse(
-    #     s.cr,
-    #     s.uid,
-    #     attachment_b_id,
-    #     context=s.context
-    # )
-    with attachment_b_obj.get_file_like(
+
+    file_like = attachment_b_obj.get_file_like(
         s.cr,
         s.uid,
         [attachment_b_id],
         context=s.context
-    ) as file_like:
+    )
+
+    for chunk_data in split_data_in_chunks(file_like):
+
+        chunk_data.update({
+            'backend_id': backend_id,
+            'attachment_binding_id': attachment_b_id,
+        })
+
+        chunk_b_obj.create(s.cr, s.uid, chunk_data, context=s.context)
+
+
+def split_data_in_chunks(data):
+    """Take a file-like object, and return chunk data."""
+
+    # these should be configured in the ParsePolicy
+    delimiter = ';'
+    quotechar = '"'
+
+    with data as file_like:
 
         reader = csv.reader(
             file_like,
@@ -171,10 +179,8 @@ def parse_attachment(s, model_name, backend_id,
             quotechar=quotechar
         )
 
-        header_list = reader.next()
-        attachment_b_obj.write(s.cr, s.uid, [attachment_b_id], {
-            'prepared_header': simplejson.dumps(header_list)
-        })
+        # skip the header
+        reader.next()
 
         chunk_array = []
         line_start = 1
@@ -184,15 +190,12 @@ def parse_attachment(s, model_name, backend_id,
             # new one
             if line[0]:
                 # if we have a previous chunk, write it
-                # TODO duplicated code, maybe refactor
                 if chunk_array:
-                    chunk_b_obj.create(s.cr, s.uid, {
-                        'backend_id': backend_id,
-                        'attachment_binding_id': attachment_b_id,
+                    yield {
                         'prepared_data': simplejson.dumps(chunk_array),
                         'line_start': line_start,
                         'line_stop': reader.line_num,
-                    }, context=s.context)
+                    }
                 # reader.line_num is not the same as enumerate(reader): a field
                 # could contain newlines. We use line_num because we then
                 # use it to recover lines from the original file.
@@ -202,17 +205,9 @@ def parse_attachment(s, model_name, backend_id,
                 chunk_array.append(line)
 
         # write the last chunk
-        # TODO duplicated code, maybe refactor
         if chunk_array:
-            chunk_b_obj.create(s.cr, s.uid, {
-                'backend_id': backend_id,
-                'attachment_binding_id': attachment_b_id,
+            yield {
                 'prepared_data': simplejson.dumps(chunk_array),
                 'line_start': line_start,
-                'line_stop': reader.line_num,
-            }, context=s.context)
-
-
-def split_data_in_chunks(data):
-    """Take a file-like object, and return chunk data."""
-    return iter([])
+                'line_stop': reader.line_num + 1,
+            }

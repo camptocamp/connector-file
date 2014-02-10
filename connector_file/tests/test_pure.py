@@ -15,14 +15,6 @@ class TestSplitDataInChunks(unittest2.TestCase):
         """Return a file-like object from the trimmed string."""
         return contextlib.closing(StringIO(textwrap.dedent(string)))
 
-    def test_empty_iterator(self):
-        """An empty iterator should create no chunks."""
-        data = iter([])
-
-        result = split_data_in_chunks(data)
-
-        self.assertEquals(list(result), [])
-
     def test_empty_file(self):
         """An empty file should create no chunks."""
 
@@ -42,3 +34,41 @@ class TestSplitDataInChunks(unittest2.TestCase):
         result = split_data_in_chunks(input_file)
 
         self.assertEquals(list(result), [])
+
+    def test_realistic_header(self):
+        """It should return no chunks with a realistic header."""
+
+        input_file = self._prep_data("""\
+            ref;date;period_id;journal_id;"line_id/account_id";"line_id/partner_id";"line_id/name";"line_id/
+            """)
+
+        result = split_data_in_chunks(input_file)
+
+        self.assertEquals(list(result), [])
+
+    def test_one_chunk(self):
+        """It should return one chunk when given such a CSV."""
+
+        input_file = self._prep_data("""\
+            ref;date;period_id;journal_id;"line_id/account_id";"line_id/partner_id";"line_id/name";"line_id/analytic_account_id";"line_id/debit";"line_id/credit";line_id/tax_code_id
+            1728274;2014-02-02;"02\/2014";"Sales Journal - (test)";X11001;"Bank";"Camptocamp";;37.8;;
+            ;;;;X1111;"Bank";"Camptocamp";AA009;;31.5;taxcode1
+            ;;;;X2001;"Bank";"Camptocamp";AA001;;3.83;taxcode1
+            ;;;;X2110;"Bank";"Camptocamp";AA001;3.83;;taxcode1
+            ;;;;X1000;"Bank";"Camptocamp";;;6.3;taxcode2
+            ;;;;X1000;"Bank";"Camptocamp";;;-0;taxcode2""")
+
+        result = split_data_in_chunks(input_file)
+        result_list = list(result)
+
+        self.assertEquals(1, len(result_list))
+
+        result_chunk = result_list[0]
+
+        self.assertItemsEqual([
+            'line_start', 'line_stop', 'prepared_data'
+        ], result_chunk.keys())
+
+        self.assertEquals(2, result_chunk['line_start'])
+        self.assertEquals(8, result_chunk['line_stop'])
+        self.assertEquals('[["1728274", "2014-02-02", "02\\\\/2014", "Sales Journal - (test)", "X11001", "Bank", "Camptocamp", "", "37.8", "", ""], ["", "", "", "", "X1111", "Bank", "Camptocamp", "AA009", "", "31.5", "taxcode1"], ["", "", "", "", "X2001", "Bank", "Camptocamp", "AA001", "", "3.83", "taxcode1"], ["", "", "", "", "X2110", "Bank", "Camptocamp", "AA001", "3.83", "", "taxcode1"], ["", "", "", "", "X1000", "Bank", "Camptocamp", "", "", "6.3", "taxcode2"], ["", "", "", "", "X1000", "Bank", "Camptocamp", "", "", "-0", "taxcode2"]]', result_chunk['prepared_data'])
