@@ -159,3 +159,12 @@ class TestParseHeaderData(TestParsePolicy):
         result = self.parse_policy._parse_header_data(input_file)
 
         self.assertEquals(result, self.expected_parsed_header)
+
+    def test_two_chunks(self):
+        """It should return the header when given two chunks."""
+
+        input_file = open(self._expand_path('two_chunks.csv'))
+
+        result = self.parse_policy._parse_header_data(input_file)
+
+        self.assertEquals(result, self.expected_parsed_header)
