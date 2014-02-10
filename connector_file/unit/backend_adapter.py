@@ -20,18 +20,116 @@
 ##############################################################################
 """Backend adapters."""
 
+import csv
 import logging
-from openerp.addons.connector.queue.job import job
-from openerp.addons.connector.unit.synchronizer import ImportSynchronizer
+import simplejson
+
 from connector.unit.backend_adapter import BackendAdapter
 from ..backend import file_import
-from ..connector import get_environment
 
 _logger = logging.getLogger(__name__)
 
 
 @file_import
 class ParsePolicy(BackendAdapter):
-    def run(self, attachment_binding_id):
+
+    _model_name = ['ir.attachment.binding']
+
+    def run(self, attachment_b_id):
         """Parse the attachment and split it into chunks."""
-        
+        import pdb;pdb.set_trace()
+        s = self.session
+        attachment_b_obj = s.pool[self.model._name]
+        chunk_b_obj = s.pool['file.chunk.binding']
+
+        file_like = attachment_b_obj.get_file_like(
+            s.cr,
+            s.uid,
+            [attachment_b_id],
+            context=s.context
+        )
+
+        attachment_b_obj.write(s.cr, s.uid, attachment_b_id, {
+            'prepared_header': self._parse_header_data(file_like),
+        })
+
+        file_like_2 = attachment_b_obj.get_file_like(
+            s.cr,
+            s.uid,
+            [attachment_b_id],
+            context=s.context
+        )
+
+        for chunk_data in self._split_data_in_chunks(file_like_2):
+
+            chunk_data.update({
+                'attachment_binding_id': attachment_b_id,
+            })
+
+            chunk_b_obj.create(s.cr, s.uid, chunk_data, context=s.context)
+
+    def _split_data_in_chunks(self, data):
+        """Take a file-like object, and return chunk data."""
+
+        # these should be configured in the ParsePolicy
+        delimiter = ';'
+        quotechar = '"'
+
+        with data as file_like:
+
+            reader = csv.reader(
+                file_like,
+                delimiter=delimiter,
+                quotechar=quotechar
+            )
+
+            # skip the header
+            reader.next()
+
+            chunk_array = []
+            line_start = 1
+
+            for line in reader:
+                # it is a move, not a move line: write a chunk and create a
+                # new one
+                if line[0]:
+                    # if we have a previous chunk, write it
+                    if chunk_array:
+                        yield {
+                            'prepared_data': simplejson.dumps(chunk_array),
+                            'line_start': line_start,
+                            'line_stop': reader.line_num,
+                        }
+                    # reader.line_num is not the same as enumerate(reader): a field
+                    # could contain newlines. We use line_num because we then
+                    # use it to recover lines from the original file.
+                    line_start = reader.line_num
+                    chunk_array = [line]
+                else:
+                    chunk_array.append(line)
+
+            # write the last chunk
+            if chunk_array:
+                yield {
+                    'prepared_data': simplejson.dumps(chunk_array),
+                    'line_start': line_start,
+                    'line_stop': reader.line_num + 1,
+                }
+
+    def _parse_header_data(self, data, delimiter=';', quotechar='"'):
+        """Take a file-like object, and return JSON-parsed header."""
+
+        with data as file_like:
+
+            reader = csv.reader(
+                file_like,
+                delimiter=delimiter,
+                quotechar=quotechar
+            )
+
+            try:
+                raw_header = reader.next()
+            except StopIteration:
+                # empty file, we can also decide to raise here
+                return ''
+            return simplejson.dumps(raw_header)
