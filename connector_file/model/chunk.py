@@ -105,29 +105,39 @@ class file_chunk_binding(orm.Model):
     _sql_constraints = [
     ]
 
+    def _get_raw_data(self, file_like, line_start, line_stop):
+        """Return raw data from the file_like, from line_start to line_stop.
+
+        Note that line numbers are 1-based, while islice is 0-based.
+
+        """
+
+        myslice = itertools.islice(
+            file_like,
+            line_start - 1,
+            line_stop - 1
+        )
+        raw_chunk_io = cStringIO.StringIO()
+        raw_chunk_io.writelines(myslice)
+        return raw_chunk_io.getvalue()
+
     def get_raw_button(self, cr, uid, ids, context=None):
-        """Return the original raw data for this chunk from the file.
+        """Extract the original raw data for this chunk from the file.
 
         This will use the line_start e line_stop to get the raw data
         for this chunk from the original file, without header.
-
-        Note that line numbers are 1-based, while islice is 0-based.
 
         Return True
 
         """
         for chunk in self.browse(cr, uid, ids, context=context):
-            chunk.attachment_binding_id.get_file_like()
             with chunk.attachment_binding_id.get_file_like() as file_like:
-                myslice = itertools.islice(
-                    file_like,
-                    chunk.line_start - 1,
-                    chunk.line_stop - 1
-                )
-                raw_chunk_io = cStringIO.StringIO()
-                raw_chunk_io.writelines(myslice)
                 chunk.write({
-                    'raw_data': base64.encodestring(raw_chunk_io.getvalue())
+                    'raw_data': base64.encodestring(self._get_raw_data(
+                        file_like,
+                        chunk.line_start,
+                        chunk.line_stop,
+                    ))
                 })
         return True
 
