@@ -3,6 +3,7 @@ import unittest2
 import contextlib
 from cStringIO import StringIO
 import textwrap
+import os
 from mock import Mock
 
 from ..unit.backend_adapter import ParsePolicy
@@ -15,6 +16,14 @@ class TestParsePolicy(unittest2.TestCase):
     These tests are independent from OpenERP, and very fast.
 
     """
+
+    def _expand_path(self, filename):
+        """Return the full path for a data file.
+
+        The file is in the same directory as __name__.
+
+        """
+        return os.path.join(os.path.dirname(__file__), filename)
 
     def _prep_data(self, string):
         """Return a file-like object from the trimmed string."""
@@ -54,10 +63,7 @@ class TestSplitDataInChunks(TestParsePolicy):
     def test_realistic_header(self):
         """It should return no chunks with a realistic header."""
 
-        input_file = self._prep_data("""\
-            ref;date;period_id;journal_id;"line_id/account_id";"line_id/partner_id";"line_id/name";"line_id/
-            """)
-
+        input_file = open(self._expand_path('header.csv'))
         result = self.parse_policy._split_data_in_chunks(input_file)
 
         self.assertEquals(list(result), [])
@@ -65,14 +71,7 @@ class TestSplitDataInChunks(TestParsePolicy):
     def test_one_chunk(self):
         """It should return one chunk when given such a CSV."""
 
-        input_file = self._prep_data("""\
-            ref;date;period_id;journal_id;"line_id/account_id";"line_id/partner_id";"line_id/name";"line_id/analytic_account_id";"line_id/debit";"line_id/credit";line_id/tax_code_id
-            1728274;2014-02-02;"02\/2014";"Sales Journal - (test)";X11001;"Bank";"Camptocamp";;37.8;;
-            ;;;;X1111;"Bank";"Camptocamp";AA009;;31.5;taxcode1
-            ;;;;X2001;"Bank";"Camptocamp";AA001;;3.83;taxcode1
-            ;;;;X2110;"Bank";"Camptocamp";AA001;3.83;;taxcode1
-            ;;;;X1000;"Bank";"Camptocamp";;;6.3;taxcode2
-            ;;;;X1000;"Bank";"Camptocamp";;;-0;taxcode2""")
+        input_file = open(self._expand_path('one_chunk.csv'))
 
         result = self.parse_policy._split_data_in_chunks(input_file)
         result_list = list(result)
@@ -106,10 +105,17 @@ class TestParseHeaderData(TestParsePolicy):
     def test_realistic_header(self):
         """It should return parse a realistic header."""
 
-        input_file = self._prep_data("""\
-            ref;date;period_id;journal_id;"line_id/account_id";"line_id/partner_id";"line_id/name";"line_id/
-            """)
+        input_file = open(self._expand_path('header.csv'))
 
         result = self.parse_policy._parse_header_data(input_file)
 
-        self.assertEquals(result, '["ref", "date", "period_id", "journal_id", "line_id/account_id", "line_id/partner_id", "line_id/name", "line_id/\\n"]')
+        self.assertEquals(result, '["ref", "date", "period_id", "journal_id", "line_id/account_id", "line_id/partner_id", "line_id/name", "line_id/analytic_account_id", "line_id/debit", "line_id/credit", "line_id/tax_code_id"]')
+
+    def test_one_chunk(self):
+        """It should return the header when given one chunk."""
+
+        input_file = open(self._expand_path('one_chunk.csv'))
+
+        result = self.parse_policy._parse_header_data(input_file)
+
+        self.assertEquals(result, '["ref", "date", "period_id", "journal_id", "line_id/account_id", "line_id/partner_id", "line_id/name", "line_id/analytic_account_id", "line_id/debit", "line_id/credit", "line_id/tax_code_id"]')
