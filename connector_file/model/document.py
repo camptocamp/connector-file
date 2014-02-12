@@ -30,7 +30,7 @@ from openerp.addons.connector.queue.job import job
 
 from ..backend import file_import
 from ..connector import get_environment
-from ..unit.backend_adapter import ParsePolicy
+from ..unit.csv_policy import CSVParsePolicy
 from ..unit.synchronizer import BaseFileSynchronizer
 from ..unit.parser import BaseParser
 
@@ -191,5 +191,5 @@ def parse_attachment(s, model_name, record_id):
     attachment_b = s.browse(model_name, record_id)
     backend_id = attachment_b.backend_id.id
     env = get_environment(s, model_name, backend_id)
-    parse_policy = env.get_connector_unit(ParsePolicy)
+    parse_policy = env.get_connector_unit(CSVParsePolicy)
     parse_policy.run(record_id)
