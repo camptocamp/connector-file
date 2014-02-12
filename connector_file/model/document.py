@@ -32,8 +32,10 @@ from ..connector import get_environment
 
 from ..unit.backend_adapter import ParsePolicy
 
+from ..unit.synchronizer import BaseFileSynchronizer
 
-class AttachmentBinding(orm.Model):
+
+class attachment_binding(orm.Model):
 
     """Binding for the attachment."""
 
@@ -124,6 +126,52 @@ class AttachmentBinding(orm.Model):
         # in py2, a StringIO cannot be used in a 'with' context manager
         # contextlib.closing is there just for that
         return contextlib.closing(file_like)
+
+# no decorator here
+class FileSynchronizer(BaseFileSynchronizer):
+
+    def get_files_to_create(self):
+        """search if there are new files to get"""
+        pass
+
+    def create_file(self):
+        """create ir.attachment.binding"""
+        pass
+
+    def manage_file_retrieval_error(self):
+        pass
+
+    def run(self):
+        pass
+
+
+@file_import
+class DirectFileSynchronizer(FileSynchronizer):
+    pass
+
+
+@file_import
+class AsyncFileSynchronizer(FileSynchronizer):
+    pass
+
+# no decorator here
+class FileParser(BaseParser):
+    def get_file_to_parse(self):
+        pass
+
+    def parse_file(self, attachment_binding_id):
+        pass
+
+    def run(self):
+        pass
+
+@file_import
+class DirectFileParser(FileParser):
+    pass
+
+@file_import
+class AsyncFileParser(FileParser):
+    pass
 
 
 @job

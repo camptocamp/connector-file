@@ -172,6 +172,15 @@ class file_chunk_binding(orm.Model):
         return True
 
 
+class ChunkProcessor(BaseChunkProcessor):
+    """create jobs to manage chunk loading"""
+    def get_chunk_to_load(self):
+        pass
+    def load_chunk(self):
+        pass
+    def run(self):
+        pass
+
 @job
 def load_chunk(s, model_name, backend_id, chunk_b_id):
     """Load a chunk into an OpenERP Journal Entry."""

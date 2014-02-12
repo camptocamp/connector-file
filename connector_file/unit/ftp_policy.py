@@ -18,22 +18,3 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-"""Specific exceptions for the OpenERP File Import Connector."""
-
-from openerp.addons.connector.exception import FailedJobError
-
-
-class MoveLoadFailedJobError(FailedJobError):
-
-    """This exception is raised if the load() of a move fails."""
-
-    pass
-
-
-class InvalidFileError(FailedJobError):
-    """"""
-    pass
-
-
-class ParseError(FailedJobError):
-    pass

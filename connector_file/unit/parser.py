@@ -18,22 +18,18 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-"""Specific exceptions for the OpenERP File Import Connector."""
+"""Connector Synchronizers."""
 
-from openerp.addons.connector.exception import FailedJobError
+import logging
 
+_logger = logging.getLogger(__name__)
 
-class MoveLoadFailedJobError(FailedJobError):
-
-    """This exception is raised if the load() of a move fails."""
-
-    pass
+from .synchronizer import BaseFileSynchronizer
+# from connector import importsynchronizer
 
 
-class InvalidFileError(FailedJobError):
-    """"""
-    pass
-
-
-class ParseError(FailedJobError):
-    pass
+class BaseParser(ImportSynchronizer):
+    def __init__(self, environment):
+        super(BaseParser, self).__init__(environment)
+        self._parser_policy = None
+        self._parser_error_policy = None

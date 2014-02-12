@@ -25,6 +25,7 @@ from openerp.osv import orm, fields
 from openerp.addons.connector.session import ConnectorSession
 
 
+
 class file_import_backend(orm.Model):
 
     """File Import Backend."""
@@ -45,8 +46,15 @@ class file_import_backend(orm.Model):
             required=True),
         'company_id': fields.many2one('res.company', 'Company'),
         'file_regexp': fields.char('File regexp', size=64),
-        'single_file_name': fields.char('Single File Name', size=64),
         'user_id': fields.many2one('res.users', 'User'),
+        'ftp_host': f,
+        'ftp_user': f,
+        'ftp_password': f,
+        'ftp_input_folder': f,
+        'ftp_output_folder': f,
+        'use_sftp': fields.boolean(),
+        'model_id': f,  #account.move
+
     }
 
     _defaults = {
@@ -60,3 +68,6 @@ class file_import_backend(orm.Model):
 #        for current in self.browse(cr, uid, ids, context=context):
 #            direct_sync_users(session, current.id)
         return ids
+
+
+class 

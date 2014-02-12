@@ -18,22 +18,30 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-"""Specific exceptions for the OpenERP File Import Connector."""
+"""Backend adapters."""
 
-from openerp.addons.connector.exception import FailedJobError
+import logging
+
+from openerp.addons.connector.connector import ConnectorUnit
+
+_logger = logging.getLogger(__name__)
 
 
-class MoveLoadFailedJobError(FailedJobError):
-
-    """This exception is raised if the load() of a move fails."""
-
+class Policy(ConnectorUnit):
     pass
 
 
-class InvalidFileError(FailedJobError):
-    """"""
+class ParsePolicy(Policy):
     pass
 
 
-class ParseError(FailedJobError):
+class FileGetterPolicy(Policy):
+    pass
+
+
+class FileGetterErrorPolicy(Policy):
+    pass
+
+
+class ParseErrorPolicy(Policy):
     pass

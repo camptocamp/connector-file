@@ -18,20 +18,17 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-"""Backend adapters."""
 
 import csv
 import logging
 import simplejson
 
-from connector.unit.backend_adapter import BackendAdapter
+from openerp.addons.connector.connector import ConnectorUnit
 from ..backend import file_import
-
-_logger = logging.getLogger(__name__)
 
 
 @file_import
-class ParsePolicy(BackendAdapter):
+class CSVParsePolicy(ParsePolicy):
 
     _model_name = ['ir.attachment.binding']
 
@@ -71,7 +68,7 @@ class ParsePolicy(BackendAdapter):
 
     @staticmethod
     def _split_data_in_chunks(data):
-        """Take a file-like object, and return chunk data."""
+       """Take a file-like object, and return chunk data."""
 
         # these should be configured in the ParsePolicy
         delimiter = ';'
