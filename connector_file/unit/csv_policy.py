@@ -20,11 +20,10 @@
 ##############################################################################
 
 import csv
-import logging
 import simplejson
 
-from openerp.addons.connector.connector import ConnectorUnit
 from ..backend import file_import
+from .policy import ParsePolicy
 
 
 @file_import
@@ -67,12 +66,8 @@ class CSVParsePolicy(ParsePolicy):
             chunk_b_obj.create(s.cr, s.uid, chunk_data, context=s.context)
 
     @staticmethod
-    def _split_data_in_chunks(data):
-       """Take a file-like object, and return chunk data."""
-
-        # these should be configured in the ParsePolicy
-        delimiter = ';'
-        quotechar = '"'
+    def _split_data_in_chunks(data, delimiter=';', quotechar='"'):
+        """Take a file-like object, and return chunk data."""
 
         with data as file_like:
 
@@ -99,9 +94,9 @@ class CSVParsePolicy(ParsePolicy):
                             'line_start': line_start,
                             'line_stop': reader.line_num,
                         }
-                    # reader.line_num is not the same as enumerate(reader): a field
-                    # could contain newlines. We use line_num because we then
-                    # use it to recover lines from the original file.
+                    # reader.line_num is not the same as enumerate(reader): a
+                    # field could contain newlines. We use line_num because we
+                    # then use it to recover lines from the original file.
                     line_start = reader.line_num
                     chunk_array = [line]
                 else:

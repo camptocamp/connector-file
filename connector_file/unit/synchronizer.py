@@ -21,12 +21,14 @@
 """Connector Synchronizers."""
 
 import logging
-from openerp.addons.connector.queue.job import job
 
 _logger = logging.getLogger(__name__)
 
 from openerp.addons.connector.unit.synchronizer import Synchronizer
 from openerp.addons.connector.unit.synchronizer import ImportSynchronizer
+
+from .policy import FileGetterPolicy
+from .policy import FileGetterErrorPolicy
 
 
 class BaseFileSynchronizer(ImportSynchronizer):
@@ -35,6 +37,32 @@ class BaseFileSynchronizer(ImportSynchronizer):
         self._file_getter_policy = None
         self._file_getter_error_policy = None
 
+    @property
+    def file_getter_policy(self):
+        """ Return an instance of ``FileGetterPolicy`` for the synchronization.
 
-    # property file_getter_policy like on connector/synchronizer.py....
+        The instanciation is delayed because some synchronisations do
+        not need such an unit and the unit may not exist.
 
+        :rtype: :py:class:`connector_file.unit.policy.FileGetterPolicy`
+        """
+        if self._file_getter_policy is None:
+            self._file_getter_policy = self.environment.get_connector_unit(
+                FileGetterPolicy)
+        return self._file_getter_policy
+
+    @property
+    def file_getter_error_policy(self):
+        """ Return an instance of ``FileGetterErrorPolicy`` for the
+        synchronization.
+
+        The instanciation is delayed because some synchronisations do
+        not need such an unit and the unit may not exist.
+
+        :rtype: :py:class:`connector_file.unit.policy.FileGetterErrorPolicy`
+        """
+        if self._file_getter_error_policy is None:
+            self._file_getter_error_policy = (
+                self.environment.get_connector_unit(FileGetterErrorPolicy)
+            )
+        return self._file_getter_error_policy
