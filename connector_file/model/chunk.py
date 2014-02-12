@@ -23,14 +23,10 @@
 import itertools
 import cStringIO
 import base64
-import simplejson as json
 
 from openerp.osv import orm, fields
 
 from openerp.addons.connector.session import ConnectorSession
-from openerp.addons.connector.queue.job import job
-
-from ..exceptions import MoveLoadFailedJobError
 
 
 class file_chunk(orm.Model):
@@ -172,48 +168,6 @@ class file_chunk_binding(orm.Model):
         return True
 
 
-class ChunkProcessor(BaseChunkProcessor):
-    """create jobs to manage chunk loading"""
-    def get_chunk_to_load(self):
-        pass
-    def load_chunk(self):
-        pass
-    def run(self):
-        pass
-
-@job
-def load_chunk(s, model_name, backend_id, chunk_b_id):
-    """Load a chunk into an OpenERP Journal Entry."""
-
-    """
-    I use some short variable names:
-    _b is the binding.
-    s is the session
-
-    """
-
-    move_obj = s.pool['account.move']
-    chunk_b_obj = s.pool[model_name]
-    chunk_b = chunk_b_obj.browse(s.cr, s.uid, chunk_b_id, context=s.context)
-    prepared_header = json.loads(chunk_b.prepared_header)
-    prepared_data = json.loads(chunk_b.prepared_data)
-    load_result = move_obj.load(
-        s.cr,
-        s.uid,
-        prepared_header,
-        prepared_data,
-        context=s.context,
-    )
-
-    assert not load_result['ids'] or len(load_result['ids']) <= 1, """
-        One chunk should always generate one move, or an error.
-        More than one should not happen.
-    """
-
-    if load_result['ids']:
-        chunk_b.write({'move_id': load_result['ids'][0]}, context=s.context)
-    else:
-        raise MoveLoadFailedJobError(
-            u'Error during load() of the account.move',
-            load_result['messages']
-        )
+def load_chunk():
+    """Not here, see unit/chunk.py."""
+    return NotImplementedError

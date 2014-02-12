@@ -22,9 +22,6 @@
 
 from openerp.osv import orm, fields
 
-from openerp.addons.connector.session import ConnectorSession
-
-
 
 class file_import_backend(orm.Model):
 
@@ -47,27 +44,15 @@ class file_import_backend(orm.Model):
         'company_id': fields.many2one('res.company', 'Company'),
         'file_regexp': fields.char('File regexp', size=64),
         'user_id': fields.many2one('res.users', 'User'),
-        'ftp_host': f,
-        'ftp_user': f,
-        'ftp_password': f,
-        'ftp_input_folder': f,
-        'ftp_output_folder': f,
-        'use_sftp': fields.boolean(),
-        'model_id': f,  #account.move
-
+        'ftp_host': fields.char('FTP Host'),
+        'ftp_user': fields.char('FTP User'),
+        'ftp_password': fields.char('FTP Password'),
+        'ftp_input_folder': fields.char('FTP Input folder'),
+        'ftp_output_folder': fields.char('FTP Output folder'),
+        'use_sftp': fields.boolean('Use SFTP'),
+        'model_id': fields.many2one('ir.model', 'Model'),
     }
 
     _defaults = {
         'version': '1',
     }
-
-    def import_one_file(self, cr, uid, ids, context=None):
-        """Imports a single file specified in the backend."""
-        session = ConnectorSession(cr, uid, context=context)
-        import pdb;pdb.set_trace()
-#        for current in self.browse(cr, uid, ids, context=context):
-#            direct_sync_users(session, current.id)
-        return ids
-
-
-class 

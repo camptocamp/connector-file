@@ -24,8 +24,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-from .synchronizer import BaseFileSynchronizer
-# from connector import importsynchronizer
+from openerp.addons.connector.unit.synchronizer import ImportSynchronizer
 
 
 class BaseParser(ImportSynchronizer):

@@ -28,11 +28,11 @@ from openerp.osv import orm, fields
 from openerp.addons.connector.session import ConnectorSession
 from openerp.addons.connector.queue.job import job
 
+from ..backend import file_import
 from ..connector import get_environment
-
 from ..unit.backend_adapter import ParsePolicy
-
 from ..unit.synchronizer import BaseFileSynchronizer
+from ..unit.parser import BaseParser
 
 
 class attachment_binding(orm.Model):
@@ -127,6 +127,7 @@ class attachment_binding(orm.Model):
         # contextlib.closing is there just for that
         return contextlib.closing(file_like)
 
+
 # no decorator here
 class FileSynchronizer(BaseFileSynchronizer):
 
@@ -154,6 +155,7 @@ class DirectFileSynchronizer(FileSynchronizer):
 class AsyncFileSynchronizer(FileSynchronizer):
     pass
 
+
 # no decorator here
 class FileParser(BaseParser):
     def get_file_to_parse(self):
@@ -165,9 +167,11 @@ class FileParser(BaseParser):
     def run(self):
         pass
 
+
 @file_import
 class DirectFileParser(FileParser):
     pass
+
 
 @file_import
 class AsyncFileParser(FileParser):
