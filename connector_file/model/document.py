@@ -33,6 +33,7 @@ from ..connector import get_environment
 from ..unit.csv_policy import CSVParsePolicy
 from ..unit.synchronizer import BaseFileSynchronizer
 from ..unit.parser import BaseParser
+from ..exceptions import InvalidFileError
 
 
 class ir_attachment(orm.Model):
@@ -100,6 +101,7 @@ class attachment_binding(orm.Model):
             'attachment_binding_id',
             'Chunk Bindings',
         ),
+        'sync_date': fields.datetime('Last synchronization date'),
     }
 
     _defaults = {
@@ -158,7 +160,7 @@ class FileSynchronizer(BaseFileSynchronizer):
         """search if there are new files to get
         return list if file identifiers
         """
-        
+
         policy = self.file_getter_policy_instance
         return policy.ask_files()
 
@@ -166,10 +168,18 @@ class FileSynchronizer(BaseFileSynchronizer):
         """create ir.attachment.binding"""
         try:
             policy = self.file_getter_policy_instance
-            content = policy.get_one(file_identifier) # content is a file-like object
-            attachment_binding_id = policy.create_one(content, file_identifier)   # creates an attachment.binding.id with given content
+
+            # content is a file-like object
+            content = policy.get_one(file_identifier)
+
+            # creates an attachment.binding.id with given content
+            # returns attachment_binding_id
+            policy.create_one(content, file_identifier)
         except InvalidFileError as e:
-            self.file_getter_policy_instance.manage_exception(e, file_identifier)  #
+            self.file_getter_policy_instance.manage_exception(
+                e,
+                file_identifier
+            )
 
     def manage_file_retrieval_error(self):
         pass
@@ -190,8 +200,9 @@ class AsyncFileSynchronizer(FileSynchronizer):
 
 # no decorator here
 class FileParser(BaseParser):
+    _model_name = 'ir.attachment.binding'
 
-    def get_file_to_parse(self):
+    def get_files_to_parse(self):
         policy = self.parse_policy_instance
         return policy.ask_files()
 
@@ -200,15 +211,17 @@ class FileParser(BaseParser):
         policy.parse_one(attachment_binding_id)
 
     def parse_all(self):
-        ids = self.get_file_to_parse()
-        for att_b_id in ids:
+        ids = self.get_files_to_parse()
+        for attachment_binding_id in ids:
             parse_one_file.delay(attachment_binding_id)
 
+
 @job
-def parse_one_file(attachment_binding_id):
-    session = ...
-    parser = get_connector_unit(FileParser)
+def parse_one_file(session, model_name, backend_id, attachment_binding_id):
+    env = get_environment(session, model_name, backend_id)
+    parser = env.get_connector_unit(AsyncFileParser)
     parser.parse_one_file(attachment_binding_id)
+
 
 @file_import
 class DirectFileParser(FileParser):

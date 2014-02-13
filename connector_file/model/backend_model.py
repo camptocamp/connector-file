@@ -22,6 +22,11 @@
 
 from openerp.osv import orm, fields
 
+from openerp.addons.connector.session import ConnectorSession
+
+from ..connector import get_environment
+from .document import AsyncFileParser
+
 
 class file_import_backend(orm.Model):
 
@@ -57,12 +62,24 @@ class file_import_backend(orm.Model):
         'version': '1',
     }
 
-    def get_all(self, cr, uid, ids, context=context):
+    def get_all(self, cr, uid, ids, context=None):
         pass
 
-    def parse_all(self, cr, uid, ids, context=context):
-        parser = #get unit FileParser
-        parser.parse_all()
+    def parse_all_now(self, cr, uid, ids, context=None):
+        pass
+#        parser = #get unit FileParser
+#        parser.parse_all()
 
-    def load_all(self, cr, uid, ids, context=context):
+    def parse_all_async(self, cr, uid, ids, context=None):
+        import pdb;pdb.set_trace()
+        if context is None:
+            context = {}
+
+        session = ConnectorSession(cr, uid, context=context)
+        for backend_id in ids:
+            env = get_environment(session, self._name, backend_id)
+            parser = env.get_connector_unit(AsyncFileParser)
+            parser.parse_all()
+
+    def load_all(self, cr, uid, ids, context=None):
         pass

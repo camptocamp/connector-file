@@ -33,16 +33,10 @@
                                     executed as soon as possible.
                                 </p>
                                 <group>
-                                    <div>
-                                        <label string="Import from the file" class="oe_inline"/>
-                                        <field name="single_file_name"
-                                            class="oe_inline"
-                                            nolabel="1"/>
-                                    </div>
-                                    <button name="import_one_file"
+                                    <button name="parse_all_async"
                                         type="object"
                                         class="oe_highlight"
-                                        string="Import in background"/>
+                                        string="Parse all files in background"/>
                                 </group>
                             </page>
 
