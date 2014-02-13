@@ -71,15 +71,15 @@ class file_import_backend(orm.Model):
 #        parser.parse_all()
 
     def parse_all_async(self, cr, uid, ids, context=None):
-        import pdb;pdb.set_trace()
         if context is None:
             context = {}
 
         session = ConnectorSession(cr, uid, context=context)
         for backend_id in ids:
-            env = get_environment(session, self._name, backend_id)
+            env = get_environment(session, 'ir.attachment.binding', backend_id)
             parser = env.get_connector_unit(AsyncFileParser)
             parser.parse_all()
+        return True
 
     def load_all(self, cr, uid, ids, context=None):
         pass

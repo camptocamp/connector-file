@@ -21,6 +21,9 @@
 
 import csv
 import simplejson
+from datetime import datetime
+
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 from ..backend import file_import
 from .policy import ParsePolicy
@@ -32,7 +35,7 @@ class CSVParsePolicy(ParsePolicy):
     _model_name = ['ir.attachment.binding']
 
     def ask_files(self):
-        return self.session.search('attachment.binding', [
+        return self.session.search('ir.attachment.binding', [
             ('sync_date', '=', False)
         ])
 
@@ -52,6 +55,9 @@ class CSVParsePolicy(ParsePolicy):
 
         self.model.write(s.cr, s.uid, attachment_b_id, {
             'prepared_header': self._parse_header_data(file_like),
+            'sync_date': datetime.now().strftime(
+                DEFAULT_SERVER_DATETIME_FORMAT
+            )
         })
 
         file_like_2 = self.model.get_file_like(

@@ -22,6 +22,7 @@
 
 import cStringIO
 import contextlib
+import logging
 
 from openerp.osv import orm, fields
 
@@ -34,6 +35,8 @@ from ..unit.csv_policy import CSVParsePolicy
 from ..unit.synchronizer import BaseFileSynchronizer
 from ..unit.parser import BaseParser
 from ..exceptions import InvalidFileError
+
+_logger = logging.getLogger(__name__)
 
 
 class ir_attachment(orm.Model):
@@ -208,16 +211,40 @@ class FileParser(BaseParser):
 
     def parse_one_file(self, attachment_binding_id):
         policy = self.parse_policy_instance
+        _logger.info(
+            u'Parsing attachment binding {0} now'.format(attachment_binding_id)
+        )
         policy.parse_one(attachment_binding_id)
 
     def parse_all(self):
         ids = self.get_files_to_parse()
+        _logger.info(u'Jobs to parse {0} files put in queue'.format(len(ids)))
         for attachment_binding_id in ids:
-            parse_one_file.delay(attachment_binding_id)
+            parse_one_file.delay(
+                self.session,
+                self._model_name,
+                self.backend_record.id,
+                attachment_binding_id)
+
+    @property
+    def parse_policy_instance(self):
+        """ Return an instance of ``CSVParsePolicy`` for the
+        synchronization.
+
+        The instanciation is delayed because some synchronisations do
+        not need such an unit and the unit may not exist.
+
+        """
+        if self._parse_policy_instance is None:
+            self._parse_policy_instance = (
+                self.environment.get_connector_unit(CSVParsePolicy)
+            )
+        return self._parse_policy_instance
 
 
 @job
 def parse_one_file(session, model_name, backend_id, attachment_binding_id):
+    """Parse one file to produce chunks."""
     env = get_environment(session, model_name, backend_id)
     parser = env.get_connector_unit(AsyncFileParser)
     parser.parse_one_file(attachment_binding_id)
