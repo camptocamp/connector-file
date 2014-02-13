@@ -56,3 +56,13 @@ class file_import_backend(orm.Model):
     _defaults = {
         'version': '1',
     }
+
+    def get_all(self, cr, uid, ids, context=context):
+        pass
+
+    def parse_all(self, cr, uid, ids, context=context):
+        parser = #get unit FileParser
+        parser.parse_all()
+
+    def load_all(self, cr, uid, ids, context=context):
+        pass

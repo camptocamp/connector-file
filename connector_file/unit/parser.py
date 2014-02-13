@@ -30,5 +30,11 @@ from openerp.addons.connector.unit.synchronizer import ImportSynchronizer
 class BaseParser(ImportSynchronizer):
     def __init__(self, environment):
         super(BaseParser, self).__init__(environment)
-        self._parser_policy = None
+        self._parser_policy_instance = None
         self._parser_error_policy = None
+
+    def ask_files(self):
+        raise NotImplementedError
+
+    def parse_one(self, attachment_binding_id):
+        raise NotImplementedError

@@ -31,7 +31,13 @@ class CSVParsePolicy(ParsePolicy):
 
     _model_name = ['ir.attachment.binding']
 
-    def run(self, attachment_b_id):
+    def ask_files(self):
+        #### searcj(date=false)
+
+        return pool['attachment_binding_id'].search(date=false):
+
+
+    def parse_one(self, attachment_b_id):
         """Parse the attachment and split it into chunks."""
         s = self.session
         chunk_b_obj = s.pool['file.chunk.binding']

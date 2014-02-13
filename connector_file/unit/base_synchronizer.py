@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-"""Connector Synchronizers."""
+"""Base classes for connector synchronizers."""
 
 import logging
 

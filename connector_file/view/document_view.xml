@@ -2,6 +2,24 @@
 <openerp>
     <data>
 
+        <record id="view_attachment_form" model="ir.ui.view">
+            <field name="model">ir.attachment</field>
+            <field name="inherit_id" ref="base.view_attachment_form" />
+            <field name="arch" type="xml">
+                <group string="Data" position="before">
+                    <group string="Bindings">
+                        <group>
+                            <field name="binding_ids" nolabel="1" colspan="2"/>
+                            <button name="parse_now"
+                                string="Parse now"
+                                type="object"
+                                class="oe_highlight"/>
+                        </group>
+                    </group>
+                </group>
+            </field>
+        </record>
+
         <record id="view_attachment_binding_form" model="ir.ui.view">
             <field name="model">ir.attachment.binding</field>
             <field name="arch" type="xml">

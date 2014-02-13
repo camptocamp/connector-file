@@ -35,6 +35,41 @@ from ..unit.synchronizer import BaseFileSynchronizer
 from ..unit.parser import BaseParser
 
 
+class ir_attachment(orm.Model):
+
+    """Attachment."""
+
+    _inherit = 'ir.attachment'
+
+    _columns = {
+        'binding_ids': fields.one2many(
+            'ir.attachment.binding',
+            'openerp_id'
+        ),
+    }
+
+    # def parse_sync(self, cr, uid, ids, context=None):
+    #     """Split in chunks, return true."""
+    #     session = ConnectorSession(cr, uid, context=context)
+    #     for attachment in self.browse(cr, uid, ids, context=context):
+    #         parse_attachment(
+    #             session,
+    #             self._name,
+    #             attachment.id
+    #         )
+
+    #     return True
+
+    def parse_now(self, cr, uid, ids, context=None):
+        """Parse this file directly without jobs"""
+        session = ConnectorSession(cr, uid, context=context)
+        back_model = self.pool['file.import.backend']
+        for req in self.browse(cr, uid, ids, context=context):
+            for backend_id in back_model.search(cr, uid, [], context=context):
+                parse_attachment(session, backend_id, req.name)
+        return True
+
+
 class attachment_binding(orm.Model):
 
     """Binding for the attachment."""
@@ -78,18 +113,6 @@ class attachment_binding(orm.Model):
         ),
     ]
 
-    def parse_sync(self, cr, uid, ids, context=None):
-        """Split in chunks, return true."""
-        session = ConnectorSession(cr, uid, context=context)
-        for attachment in self.browse(cr, uid, ids, context=context):
-            parse_attachment(
-                session,
-                self._name,
-                attachment.id
-            )
-
-        return True
-
     def parse_async(self, cr, uid, ids, context=None):
         """Split in chunks, return true."""
         session = ConnectorSession(cr, uid, context=context)
@@ -132,12 +155,21 @@ class attachment_binding(orm.Model):
 class FileSynchronizer(BaseFileSynchronizer):
 
     def get_files_to_create(self):
-        """search if there are new files to get"""
-        pass
+        """search if there are new files to get
+        return list if file identifiers
+        """
+        
+        policy = self.file_getter_policy_instance
+        return policy.ask_files()
 
-    def create_file(self):
+    def create_one_file(self, file_identifier):
         """create ir.attachment.binding"""
-        pass
+        try:
+            policy = self.file_getter_policy_instance
+            content = policy.get_one(file_identifier) # content is a file-like object
+            attachment_binding_id = policy.create_one(content, file_identifier)   # creates an attachment.binding.id with given content
+        except InvalidFileError as e:
+            self.file_getter_policy_instance.manage_exception(e, file_identifier)  #
 
     def manage_file_retrieval_error(self):
         pass
@@ -158,15 +190,25 @@ class AsyncFileSynchronizer(FileSynchronizer):
 
 # no decorator here
 class FileParser(BaseParser):
+
     def get_file_to_parse(self):
-        pass
+        policy = self.parse_policy_instance
+        return policy.ask_files()
 
-    def parse_file(self, attachment_binding_id):
-        pass
+    def parse_one_file(self, attachment_binding_id):
+        policy = self.parse_policy_instance
+        policy.parse_one(attachment_binding_id)
 
-    def run(self):
-        pass
+    def parse_all(self):
+        ids = self.get_file_to_parse()
+        for att_b_id in ids:
+            parse_one_file.delay(attachment_binding_id)
 
+@job
+def parse_one_file(attachment_binding_id):
+    session = ...
+    parser = get_connector_unit(FileParser)
+    parser.parse_one_file(attachment_binding_id)
 
 @file_import
 class DirectFileParser(FileParser):
@@ -180,13 +222,7 @@ class AsyncFileParser(FileParser):
 
 @job
 def parse_attachment(s, model_name, record_id):
-    """Parse one attachment, and produces chunks.
-
-    I use some short variable names:
-    _b is the binding.
-    s is the session
-
-    """
+    """Parse one attachment, and produces chunks."""
 
     attachment_b = s.browse(model_name, record_id)
     backend_id = attachment_b.backend_id.id
