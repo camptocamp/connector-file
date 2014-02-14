@@ -11,6 +11,7 @@
                         <group string="Binding">
                             <field name="backend_id"/>
                             <field name="move_id"/>
+                            <field name="sync_date"/>
                         </group>
                         <group string="Document Binding">
                             <field name="attachment_binding_id"/>

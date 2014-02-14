@@ -39,6 +39,7 @@
                                 class="oe_highlight"/>
                             <field name="chunk_binding_ids"/>
                             <field name="prepared_header"/>
+                            <field name="sync_date"/>
                         </group>
                         <group string="Data">
                             <field name="type"/>
