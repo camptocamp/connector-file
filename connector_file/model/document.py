@@ -32,7 +32,7 @@ from openerp.addons.connector.queue.job import job
 from ..backend import file_import
 from ..connector import get_environment
 from ..unit.csv_policy import CSVParsePolicy
-from ..unit.synchronizer import BaseFileSynchronizer
+from ..unit.base_synchronizer import BaseFileSynchronizer
 from ..unit.parser import BaseParser
 from ..exceptions import InvalidFileError
 
