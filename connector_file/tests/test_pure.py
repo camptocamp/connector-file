@@ -3,7 +3,7 @@ import unittest2
 import contextlib
 from cStringIO import StringIO
 import textwrap
-import os
+from os import path
 
 from ..unit.csv_policy import CSVParsePolicy
 
@@ -17,12 +17,13 @@ class TestCSVParsePolicy(unittest2.TestCase):
     """
 
     def _expand_path(self, filename):
-        """Return the full path for a data file.
-
-        The file is in the same directory as __name__.
-
-        """
-        return os.path.join(os.path.dirname(__file__), filename)
+        """Return the full path for a data file."""
+        return path.abspath(
+            path.join(
+                path.dirname(__file__),
+                'test_data',
+                filename)
+        )
 
     def _prep_data(self, string):
         """Return a file-like object from the trimmed string."""
