@@ -118,16 +118,28 @@ class attachment_binding(orm.Model):
         ),
     ]
 
-    def parse_async(self, cr, uid, ids, context=None):
-        """Split in chunks, return true."""
+    def parse_now_button(self, cr, uid, ids, context=None):
+        """Load the chunk, return true."""
         session = ConnectorSession(cr, uid, context=context)
-        for attachment in self.browse(cr, uid, ids, context=context):
-            parse_attachment.delay(
+
+        for attachment_binding in self.browse(cr, uid, ids, context=context):
+            env = get_environment(
                 session,
                 self._name,
-                attachment.id,
-            )
-        return True
+                attachment_binding.backend_id.id)
+            parser = env.get_connector_unit(DirectFileParser)
+            parser.parse_one_file(attachment_binding.id)
+
+    # def parse_async(self, cr, uid, ids, context=None):
+    #     """Split in chunks, return true."""
+    #     session = ConnectorSession(cr, uid, context=context)
+    #     for attachment in self.browse(cr, uid, ids, context=context):
+    #         parse_attachment.delay(
+    #             session,
+    #             self._name,
+    #             attachment.id,
+    #         )
+    #     return True
 
     def get_file_like(self, cr, uid, ids, context=None):
         """Return an open file-like object with the attachment content.

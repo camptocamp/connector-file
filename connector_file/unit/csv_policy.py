@@ -32,10 +32,10 @@ from .policy import ParsePolicy
 @file_import
 class CSVParsePolicy(ParsePolicy):
 
-    _model_name = ['ir.attachment.binding']
+    _model_name = 'ir.attachment.binding'
 
     def ask_files(self):
-        return self.session.search('ir.attachment.binding', [
+        return self.session.search(self._model_name, [
             ('sync_date', '=', False)
         ])
 

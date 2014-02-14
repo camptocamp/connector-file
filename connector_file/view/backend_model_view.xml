@@ -37,6 +37,10 @@
                                         type="object"
                                         class="oe_highlight"
                                         string="Parse all files in background"/>
+                                    <button name="load_all_async"
+                                        type="object"
+                                        class="oe_highlight"
+                                        string="Load all chunks in background"/>
                                 </group>
                             </page>
 

@@ -26,6 +26,7 @@ from openerp.addons.connector.session import ConnectorSession
 
 from ..connector import get_environment
 from .document import AsyncFileParser
+from ..unit.chunk import AsyncChunkLoader
 
 
 class file_import_backend(orm.Model):
@@ -81,5 +82,13 @@ class file_import_backend(orm.Model):
             parser.parse_all()
         return True
 
-    def load_all(self, cr, uid, ids, context=None):
-        pass
+    def load_all_async(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+
+        session = ConnectorSession(cr, uid, context=context)
+        for backend_id in ids:
+            env = get_environment(session, 'file.chunk.binding', backend_id)
+            loader = env.get_connector_unit(AsyncChunkLoader)
+            loader.load_all()
+        return True

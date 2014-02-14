@@ -27,22 +27,21 @@ _logger = logging.getLogger(__name__)
 from openerp.addons.connector.unit.synchronizer import ImportSynchronizer
 
 
-class BaseParser(ImportSynchronizer):
+class BaseLoader(ImportSynchronizer):
 
-    """Base class for a parser.
+    """Base class for a Loader.
 
-    The parser takes care of parsing raw files to produce chunks with
-    prepared JSON data.
+    The Loader takes care of loading a chunk into an OpenERP object.
 
     """
 
     def __init__(self, environment):
-        super(BaseParser, self).__init__(environment)
-        self._parse_policy_instance = None
-        self._parse_error_policy = None
+        super(BaseLoader, self).__init__(environment)
+        self._load_policy_instance = None
+        self._load_error_policy = None
 
     def ask_files(self):
         raise NotImplementedError
 
-    def parse_one(self, attachment_binding_id):
+    def load_one(self, chunk_binding_id):
         raise NotImplementedError

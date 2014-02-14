@@ -25,14 +25,10 @@
                                 type="object"
                                 class="oe_highlight"
                                 string="Get Raw Data"/>
-                            <button name="load_sync"
+                            <button name="load_now_button"
                                 type="object"
                                 class="oe_highlight"
                                 string="Load Chunk immediately"/>
-                            <button name="load_async"
-                                type="object"
-                                class="oe_highlight"
-                                string="Load Chunk in background"/>
                         </group>
                     </group>
                   </sheet>

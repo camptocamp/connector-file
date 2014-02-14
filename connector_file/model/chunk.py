@@ -28,6 +28,9 @@ from openerp.osv import orm, fields
 
 from openerp.addons.connector.session import ConnectorSession
 
+from ..connector import get_environment
+from ..unit.chunk import ChunkLoader
+
 
 class file_chunk(orm.Model):
 
@@ -44,6 +47,7 @@ class file_chunk(orm.Model):
         'line_stop': fields.integer('Line Stop', help="1-based"),
         'prepared_data': fields.char('Prepared Data, JSON'),
         'raw_data': fields.binary('Raw data, press button to update'),
+        'sync_date': fields.datetime('Last synchronization date'),
     }
 
     def load_data(self):
@@ -137,37 +141,13 @@ class file_chunk_binding(orm.Model):
                 })
         return True
 
-    def load_sync(self, cr, uid, ids, context=None):
+    def load_now_button(self, cr, uid, ids, context=None):
         """Load the chunk, return true."""
         session = ConnectorSession(cr, uid, context=context)
-        for chunk in self.browse(cr, uid, ids, context=context):
-            backend_id = chunk.backend_id.id
 
-            load_chunk(
-                session,
-                self._name,
-                backend_id,
-                chunk.id
-            )
+        for chunk_b in self.browse(cr, uid, ids, context=context):
+            env = get_environment(session, self._name, chunk_b.backend_id.id)
+            parser = env.get_connector_unit(ChunkLoader)
+            parser.load_one_chunk(chunk_b.id)
 
         return True
-
-    def load_async(self, cr, uid, ids, context=None):
-        """Load the chunk, return true."""
-        session = ConnectorSession(cr, uid, context=context)
-        for chunk in self.browse(cr, uid, ids, context=context):
-            backend_id = chunk.backend_id.id
-
-            load_chunk.delay(
-                session,
-                self._name,
-                backend_id,
-                chunk.id,
-            )
-
-        return True
-
-
-def load_chunk():
-    """Not here, see unit/chunk.py."""
-    return NotImplementedError

@@ -20,67 +20,76 @@
 ##############################################################################
 """Units for processing chunks."""
 
-import simplejson as json
+import logging
 
 from openerp.addons.connector.queue.job import job
 
 from openerp.addons.connector.connector import ConnectorUnit
-from ..exceptions import MoveLoadFailedJobError
+from ..backend import file_import
+from ..connector import get_environment
+
+from ..unit.move_load_policy import MoveLoadPolicy
+
+_logger = logging.getLogger(__name__)
 
 
-class BaseChunkProcessor(ConnectorUnit):
+class BaseChunkLoader(ConnectorUnit):
     def __init__(self, environment):
-        super(ConnectorUnit, self).__init__(environment)
-        self._load_policy = None
+        super(BaseChunkLoader, self).__init__(environment)
+        self._load_policy_instance = None
 
 
-class ChunkProcessor(BaseChunkProcessor):
+class ChunkLoader(BaseChunkLoader):
 
     """create jobs to manage chunk loading"""
 
-    def get_chunk_to_load(self):
-        pass
+    _model_name = 'file.chunk.binding'
 
-    def load_chunk(self):
-        pass
+    def get_chunks_to_load(self):
+        policy = self.load_policy_instance
+        return policy.get_chunks_to_load()
 
-    def run(self):
-        pass
+    def load_one_chunk(self, chunk_binding_id):
+        policy = self.load_policy_instance
+        _logger.info(
+            u'Loading chunk binding {0} now'.format(chunk_binding_id)
+        )
+        policy.load_one_chunk(chunk_binding_id)
+
+    def load_all(self):
+        ids = self.get_chunks_to_load()
+        for chunk_binding_id in ids:
+            load_one_chunk.delay(
+                self.session,
+                self._model_name,
+                self.backend_record.id,
+                chunk_binding_id)
+        _logger.info(u'Jobs to load {0} chunks put in queue'.format(len(ids)))
+
+    @property
+    def load_policy_instance(self):
+        """ Return an instance of ``CSVParsePolicy`` for the
+        synchronization.
+
+        The instanciation is delayed because some synchronisations do
+        not need such an unit and the unit may not exist.
+
+        """
+        if self._load_policy_instance is None:
+            self._load_policy_instance = (
+                self.environment.get_connector_unit(MoveLoadPolicy)
+            )
+        return self._load_policy_instance
 
 
 @job
-def load_chunk(s, model_name, backend_id, chunk_b_id):
-    """Load a chunk into an OpenERP Journal Entry."""
+def load_one_chunk(session, model_name, backend_id, chunk_binding_id):
+    """Load one chunk to produce Journal Entries in OpenERP."""
+    env = get_environment(session, model_name, backend_id)
+    parser = env.get_connector_unit(ChunkLoader)
+    parser.load_one_chunk(chunk_binding_id)
 
-    """
-    I use some short variable names:
-    _b is the binding.
-    s is the session
 
-    """
-
-    move_obj = s.pool['account.move']
-    chunk_b_obj = s.pool[model_name]
-    chunk_b = chunk_b_obj.browse(s.cr, s.uid, chunk_b_id, context=s.context)
-    prepared_header = json.loads(chunk_b.prepared_header)
-    prepared_data = json.loads(chunk_b.prepared_data)
-    load_result = move_obj.load(
-        s.cr,
-        s.uid,
-        prepared_header,
-        prepared_data,
-        context=s.context,
-    )
-
-    assert not load_result['ids'] or len(load_result['ids']) <= 1, """
-        One chunk should always generate one move, or an error.
-        More than one should not happen.
-    """
-
-    if load_result['ids']:
-        chunk_b.write({'move_id': load_result['ids'][0]}, context=s.context)
-    else:
-        raise MoveLoadFailedJobError(
-            u'Error during load() of the account.move',
-            load_result['messages']
-        )
+@file_import
+class AsyncChunkLoader(ChunkLoader):
+    pass

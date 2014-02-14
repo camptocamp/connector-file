@@ -45,3 +45,7 @@ class FileGetterErrorPolicy(Policy):
 
 class ParseErrorPolicy(Policy):
     pass
+
+
+class LoadPolicy(Policy):
+    pass
