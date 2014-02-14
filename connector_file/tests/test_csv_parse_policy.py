@@ -1,11 +1,12 @@
-"""This includes pure tests on the logic, not using the OpenERP framework."""
+"""Unit tests of the CSV Parse Policy."""
+
 import unittest2
 import contextlib
 from cStringIO import StringIO
 import textwrap
-from os import path
 
 from ..unit.csv_policy import CSVParsePolicy
+from .common import expand_path
 
 
 class TestCSVParsePolicy(unittest2.TestCase):
@@ -15,15 +16,6 @@ class TestCSVParsePolicy(unittest2.TestCase):
     These tests are independent from OpenERP, and very fast.
 
     """
-
-    def _expand_path(self, filename):
-        """Return the full path for a data file."""
-        return path.abspath(
-            path.join(
-                path.dirname(__file__),
-                'test_data',
-                filename)
-        )
 
     def _prep_data(self, string):
         """Return a file-like object from the trimmed string."""
@@ -64,7 +56,7 @@ class TestSplitDataInChunks(TestCSVParsePolicy):
     def test_realistic_header(self):
         """It should return no chunks with a realistic header."""
 
-        input_file = open(self._expand_path('header.csv'))
+        input_file = open(expand_path('header.csv'))
         result = CSVParsePolicy._split_data_in_chunks(input_file)
 
         with self.assertRaises(StopIteration):
@@ -73,7 +65,7 @@ class TestSplitDataInChunks(TestCSVParsePolicy):
     def test_one_chunk(self):
         """It should return one chunk when given such a CSV."""
 
-        input_file = open(self._expand_path('one_chunk.csv'))
+        input_file = open(expand_path('one_chunk.csv'))
 
         result = CSVParsePolicy._split_data_in_chunks(input_file)
 
@@ -96,7 +88,7 @@ class TestSplitDataInChunks(TestCSVParsePolicy):
     def test_two_chunks(self):
         """It should return two chunks when given such a CSV."""
 
-        input_file = open(self._expand_path('two_chunks.csv'))
+        input_file = open(expand_path('two_chunks.csv'))
 
         result = CSVParsePolicy._split_data_in_chunks(input_file)
 
@@ -148,7 +140,7 @@ class TestParseHeaderData(TestCSVParsePolicy):
     def test_realistic_header(self):
         """It should return parse a realistic header."""
 
-        input_file = open(self._expand_path('header.csv'))
+        input_file = open(expand_path('header.csv'))
 
         result = CSVParsePolicy._parse_header_data(input_file)
 
@@ -157,7 +149,7 @@ class TestParseHeaderData(TestCSVParsePolicy):
     def test_one_chunk(self):
         """It should return the header when given one chunk."""
 
-        input_file = open(self._expand_path('one_chunk.csv'))
+        input_file = open(expand_path('one_chunk.csv'))
 
         result = CSVParsePolicy._parse_header_data(input_file)
 
@@ -166,7 +158,7 @@ class TestParseHeaderData(TestCSVParsePolicy):
     def test_two_chunks(self):
         """It should return the header when given two chunks."""
 
-        input_file = open(self._expand_path('two_chunks.csv'))
+        input_file = open(expand_path('two_chunks.csv'))
 
         result = CSVParsePolicy._parse_header_data(input_file)
 

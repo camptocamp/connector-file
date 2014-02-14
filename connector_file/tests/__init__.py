@@ -18,13 +18,13 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-"""Unit tests for the file connector."""
+"""Unit and integrated tests for the file connector."""
 
-from . import test_pure
+from . import test_csv_parse_policy
 
 fast_suite = [
 ]
 
 checks = [
-    test_pure,
+    test_csv_parse_policy,
 ]
