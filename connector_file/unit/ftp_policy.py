@@ -35,17 +35,30 @@ class FTPFileGetterPolicy(FileGetterPolicy):
     _model_name = 'ir.attachment.binding'
 
     def _get_host(self):
-        return ftputil.FTPHost(
-            self.backend_record.ftp_host,
-            self.backend_record.ftp_user,
-            self.backend_record.ftp_password,
-        )
+        pass
+
+    @staticmethod
+    def _ask_files(ftp_host, ftp_user, ftp_password, ftp_input_folder):
+        with ftputil.FTPHost(
+            ftp_host,
+            ftp_user,
+            ftp_password,
+        ) as host:
+            file_list = host.listdir(ftp_input_folder)
+            for file_name in file_list:
+                if file_name[-4:] == '.csv':
+                    hash_file_name = file_name[:-4] + '.md5'
+                    if hash_file_name in file_list:
+                        yield (file_name, hash_file_name)
 
     def ask_files(self):
-        with self._get_host as host:
-            files = host.listdir(self.backend_record.ftp_input_folder)
-            import pdb;pdb.set_trace()
-            pass
+        """Yield tuples (data_file_name, hash_file_name)."""
+
+        return self._ask_files(
+            self.backend_record.ftp_host,
+            self.backend_record.ftp_user,
+            self.backend.record.ftp_password,
+            self.backend.record.ftp_input_folder)
 
     def parse_one(self, attachment_b_id):
         """Parse the attachment and split it into chunks."""

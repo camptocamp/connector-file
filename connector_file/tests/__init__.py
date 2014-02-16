@@ -21,10 +21,12 @@
 """Unit and integrated tests for the file connector."""
 
 from . import test_csv_parse_policy
+from . import test_ftp_get_policy
 
 fast_suite = [
 ]
 
 checks = [
     test_csv_parse_policy,
+    test_ftp_get_policy,
 ]
