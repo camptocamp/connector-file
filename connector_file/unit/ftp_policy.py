@@ -19,10 +19,6 @@
 #
 ##############################################################################
 
-from datetime import datetime
-
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
-
 import ftputil
 
 from ..backend import file_import
@@ -60,39 +56,29 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             self.backend.record.ftp_password,
             self.backend.record.ftp_input_folder)
 
-    def parse_one(self, attachment_b_id):
-        """Parse the attachment and split it into chunks."""
-        s = self.session
-        chunk_b_obj = s.pool['file.chunk.binding']
-        attachment_b = s.browse(self.model._name, attachment_b_id)
-        backend_id = attachment_b.backend_id.id
+    def get_content(self, data_file_name):
+        return self._get_content(
+            data_file_name,
+            self.backend_record.ftp_host,
+            self.backend_record.ftp_user,
+            self.backend.record.ftp_password,
+            self.backend.record.ftp_input_folder)
 
-        file_like = self.model.get_file_like(
-            s.cr,
-            s.uid,
-            [attachment_b_id],
-            context=s.context
-        )
+    @staticmethod
+    def _get_hash(hash_file_name, ftp_host, ftp_user, ftp_password,
+                  ftp_input_folder):
+        with ftputil.FTPHost(
+            ftp_host,
+            ftp_user,
+            ftp_password,
+        ) as host:
+            with host.open(hash_file_name) as f:
+                return f.read()
 
-        self.model.write(s.cr, s.uid, attachment_b_id, {
-            'prepared_header': self._parse_header_data(file_like),
-            'sync_date': datetime.now().strftime(
-                DEFAULT_SERVER_DATETIME_FORMAT
-            )
-        })
-
-        file_like_2 = self.model.get_file_like(
-            s.cr,
-            s.uid,
-            [attachment_b_id],
-            context=s.context
-        )
-
-        for chunk_data in self._split_data_in_chunks(file_like_2):
-
-            chunk_data.update({
-                'attachment_binding_id': attachment_b_id,
-                'backend_id': backend_id,
-            })
-
-            chunk_b_obj.create(s.cr, s.uid, chunk_data, context=s.context)
+    def get_hash(self, hash_file_name):
+        return self._get_hash(
+            hash_file_name,
+            self.backend_record.ftp_host,
+            self.backend_record.ftp_user,
+            self.backend.record.ftp_password,
+            self.backend.record.ftp_input_folder)

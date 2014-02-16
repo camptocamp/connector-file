@@ -25,6 +25,7 @@ from openerp.osv import orm, fields
 from openerp.addons.connector.session import ConnectorSession
 
 from ..connector import get_environment
+from ..unit.document import AsyncFileSynchronizer
 from ..unit.document import AsyncFileParser
 from ..unit.chunk import AsyncChunkLoader
 
@@ -70,6 +71,17 @@ class file_import_backend(orm.Model):
         pass
 #        parser = #get unit FileParser
 #        parser.parse_all()
+
+    def get_all_async(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+
+        session = ConnectorSession(cr, uid, context=context)
+        for backend_id in ids:
+            env = get_environment(session, 'ir.attachment.binding', backend_id)
+            getr = env.get_connector_unit(AsyncFileSynchronizer)
+            getr.get_all()
+        return True
 
     def parse_all_async(self, cr, uid, ids, context=None):
         if context is None:

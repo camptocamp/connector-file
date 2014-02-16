@@ -27,6 +27,19 @@ class TestFTPGetPolicyWithoutOE(unittest2.TestCase):
         with self.assertRaises(StopIteration):
             actual_file_generator.next()
 
+    def test__get_hash(self):
+        actual_hash_string = FTPFileGetterPolicy._get_hash(
+            'to_openerp/s1.md5',
+            'localhost',
+            'ftpuser',
+            'ftppass',
+            'to_openerp',
+        )
+        self.assertEquals(
+            actual_hash_string,
+            '6f7fff2b3f9762a99688bfab52f06bac'
+        )
+
 
 class TestFTPGetPolicyWithOE(unittest2.TestCase):
     """Unit Tests for the FTP Get Policy that do use OpenERP."""

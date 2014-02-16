@@ -33,6 +33,10 @@
                                     executed as soon as possible.
                                 </p>
                                 <group>
+                                    <button name="get_all_async"
+                                        type="object"
+                                        class="oe_highlight"
+                                        string="Get all files in background"/>
                                     <button name="parse_all_async"
                                         type="object"
                                         class="oe_highlight"

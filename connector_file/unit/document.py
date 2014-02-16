@@ -17,34 +17,44 @@ class FileSynchronizer(BaseFileSynchronizer):
 
     def get_files_to_create(self):
         """search if there are new files to get
-        return list of file identifiers
+        return iterator of file identifiers.
         """
 
         policy = self.file_getter_policy_instance
         return policy.ask_files()
 
-    def create_one_file(self, file_identifier):
+    def create_one_file(self, data_file_name, hash_file_name):
         """create ir.attachment.binding"""
         try:
             policy = self.file_getter_policy_instance
 
             # content is a file-like object
-            content = policy.get_one(file_identifier)
+            content = policy.get_content(
+                data_file_name)
+
+            hash_string = policy.get_hash(hash_file_name)
 
             # creates an attachment.binding.id with given content
             # returns attachment_binding_id
-            policy.create_one(content, file_identifier)
+            policy.create_one(content, content, hash_string)
         except InvalidFileError as e:
             self.file_getter_policy_instance.manage_exception(
                 e,
-                file_identifier
+                data_file_name, hash_file_name
             )
 
     def manage_file_retrieval_error(self):
         pass
 
-    def run(self):
-        pass
+    def get_all(self):
+        file_names = self.get_files_to_create()
+        for data_file_name, hash_file_name in file_names:
+            create_one_file.delay(
+                self.session,
+                self._model_name,
+                self.backend_record.id,
+                data_file_name,
+                hash_file_name)
 
 
 @file_import
@@ -76,7 +86,7 @@ class FileParser(BaseParser):
         ids = self.get_files_to_parse()
         _logger.info(u'Jobs to parse {0} files put in queue'.format(len(ids)))
         for attachment_binding_id in ids:
-            parse_one_file.delay(
+            create_one_file.delay(
                 self.session,
                 self._model_name,
                 self.backend_record.id,
@@ -99,11 +109,20 @@ class FileParser(BaseParser):
 
 
 @job
+def create_one_file(session, model_name, backend_id, data_file_name,
+                    hash_file_name):
+    """Get one file and create an attachment binding."""
+    env = get_environment(session, model_name, backend_id)
+    synchronizer = env.get_connector_unit(AsyncFileSynchronizer)
+    synchronizer.get_one_file(data_file_name, hash_file_name)
+
+
+@job
 def parse_one_file(session, model_name, backend_id, attachment_binding_id):
     """Parse one file to produce chunks."""
     env = get_environment(session, model_name, backend_id)
     parser = env.get_connector_unit(AsyncFileParser)
-    parser.parse_one_file(attachment_binding_id)
+    parser.create_one_file(attachment_binding_id)
 
 
 @file_import
