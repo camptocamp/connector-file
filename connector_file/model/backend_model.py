@@ -25,7 +25,7 @@ from openerp.osv import orm, fields
 from openerp.addons.connector.session import ConnectorSession
 
 from ..connector import get_environment
-from .document import AsyncFileParser
+from ..unit.document import AsyncFileParser
 from ..unit.chunk import AsyncChunkLoader
 
 
