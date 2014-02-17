@@ -21,6 +21,7 @@
 
 import ftputil
 import os
+import base64
 
 from ..backend import file_import
 from .policy import FileGetterPolicy
@@ -57,8 +58,8 @@ class FTPFileGetterPolicy(FileGetterPolicy):
         return self._ask_files(
             self.backend_record.ftp_host,
             self.backend_record.ftp_user,
-            self.backend.record.ftp_password,
-            self.backend.record.ftp_input_folder)
+            self.backend_record.ftp_password,
+            self.backend_record.ftp_input_folder)
 
     @staticmethod
     def _get_content(data_file_name, ftp_host, ftp_user, ftp_password,
@@ -75,8 +76,8 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             data_file_name,
             self.backend_record.ftp_host,
             self.backend_record.ftp_user,
-            self.backend.record.ftp_password,
-            self.backend.record.ftp_input_folder)
+            self.backend_record.ftp_password,
+            self.backend_record.ftp_input_folder)
 
     @staticmethod
     def _get_hash(hash_file_name, ftp_host, ftp_user, ftp_password,
@@ -94,5 +95,14 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             hash_file_name,
             self.backend_record.ftp_host,
             self.backend_record.ftp_user,
-            self.backend.record.ftp_password,
-            self.backend.record.ftp_input_folder)
+            self.backend_record.ftp_password,
+            self.backend_record.ftp_input_folder)
+
+    def create_one(self, file_name, hash_string, content):
+        return self.session.create(self.model._name, {
+            'name': file_name,
+            'datas_fname': os.path.basename(file_name),
+            'external_hash': hash_string,
+            'datas': base64.b64encode(content),
+            'backend_id': self.backend_record.id,
+        })

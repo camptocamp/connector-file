@@ -52,6 +52,7 @@ class file_import_backend(orm.Model):
         'file_regexp': fields.char('File regexp', size=64),
         'user_id': fields.many2one('res.users', 'User'),
         'ftp_host': fields.char('FTP Host'),
+        'ftp_port': fields.char('FTP Port'),
         'ftp_user': fields.char('FTP User'),
         'ftp_password': fields.char('FTP Password'),
         'ftp_input_folder': fields.char('FTP Input folder'),

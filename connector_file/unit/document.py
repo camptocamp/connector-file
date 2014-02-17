@@ -15,6 +15,8 @@ _logger = logging.getLogger(__name__)
 # no decorator here
 class FileSynchronizer(BaseFileSynchronizer):
 
+    _model_name = 'ir.attachment.binding'
+
     def get_files_to_create(self):
         """search if there are new files to get
         return iterator of file identifiers.
@@ -28,7 +30,7 @@ class FileSynchronizer(BaseFileSynchronizer):
         try:
             policy = self.file_getter_policy_instance
 
-            # content is a file-like object
+            # content is a big string
             content = policy.get_content(
                 data_file_name)
 
@@ -36,7 +38,7 @@ class FileSynchronizer(BaseFileSynchronizer):
 
             # creates an attachment.binding.id with given content
             # returns attachment_binding_id
-            policy.create_one(content, content, hash_string)
+            return policy.create_one(data_file_name, hash_string, content)
         except InvalidFileError as e:
             self.file_getter_policy_instance.manage_exception(
                 e,
@@ -114,7 +116,7 @@ def create_one_file(session, model_name, backend_id, data_file_name,
     """Get one file and create an attachment binding."""
     env = get_environment(session, model_name, backend_id)
     synchronizer = env.get_connector_unit(AsyncFileSynchronizer)
-    synchronizer.get_one_file(data_file_name, hash_file_name)
+    return synchronizer.create_one_file(data_file_name, hash_file_name)
 
 
 @job

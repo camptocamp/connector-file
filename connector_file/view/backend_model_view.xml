@@ -18,7 +18,13 @@
                             <group colspan="4" col="4">
                                 <field name="company_id"/>
                                 <field name="user_id"/>
-                                <field name="file_regexp"/>
+                                <field name="ftp_host"/>
+                                <field name="ftp_port"/>
+                                <field name="ftp_user"/>
+                                <field name="ftp_password"/>
+                                <field name="ftp_input_folder"/>
+                                <field name="ftp_output_folder"/>
+                                <field name="use_sftp"/>
                             </group>
                         </group>
                         <notebook>

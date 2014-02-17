@@ -27,29 +27,30 @@ _logger = logging.getLogger(__name__)
 from openerp.addons.connector.unit.synchronizer import Synchronizer
 from openerp.addons.connector.unit.synchronizer import ImportSynchronizer
 
-from .policy import FileGetterPolicy
+from .ftp_policy import FTPFileGetterPolicy
 from .policy import FileGetterErrorPolicy
 
 
 class BaseFileSynchronizer(ImportSynchronizer):
     def __init__(self, environment):
         super(Synchronizer, self).__init__(environment)
-        self._file_getter_policy = None
+        self._file_getter_policy_instance = None
         self._file_getter_error_policy = None
 
     @property
-    def file_getter_policy(self):
-        """ Return an instance of ``FileGetterPolicy`` for the synchronization.
+    def file_getter_policy_instance(self):
+        """ Return an instance of ``FTPFileGetterPolicy`` for the
+        synchronization.
 
         The instanciation is delayed because some synchronisations do
         not need such an unit and the unit may not exist.
 
-        :rtype: :py:class:`connector_file.unit.policy.FileGetterPolicy`
         """
-        if self._file_getter_policy is None:
-            self._file_getter_policy = self.environment.get_connector_unit(
-                FileGetterPolicy)
-        return self._file_getter_policy
+        if self._file_getter_policy_instance is None:
+            self._file_getter_policy_instance = (
+                self.environment.get_connector_unit(FTPFileGetterPolicy)
+            )
+        return self._file_getter_policy_instance
 
     @property
     def file_getter_error_policy(self):
