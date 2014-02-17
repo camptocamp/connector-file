@@ -62,7 +62,7 @@ class TestFTPGetPolicyWithoutOE(unittest2.TestCase):
 
 
 class TestFTPGetPolicyWithOE(common.TransactionCase):
-    """Unit Tests for the FTP Get Policy that do use OpenERP."""
+    """Integrated Tests for the FTP Get Policy that do use OpenERP."""
 
     def setUp(self):
         super(TestFTPGetPolicyWithOE, self).setUp()
