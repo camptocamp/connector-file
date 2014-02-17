@@ -30,7 +30,9 @@ class FileSynchronizer(BaseFileSynchronizer):
         try:
             policy = self.file_getter_policy_instance
 
-            # content is a big string
+            # this can be improved by only getting the content lazily if we
+            # do actually create the attachment.
+            # content is a big string.
             content = policy.get_content(
                 data_file_name)
 

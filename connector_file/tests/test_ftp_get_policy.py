@@ -106,3 +106,24 @@ class TestFTPGetPolicyWithOE(common.TransactionCase):
                 base64.b64decode(actual_attachment_b_browse.datas),
                 expected_file_like.read()
             )
+
+    def test_create_file_uniq(self):
+        """Test that if the job to create a file is executed many times,
+        just one file is created, without raising exceptions."""
+
+        actual_attachment_b_id = create_one_file(
+            self.session,
+            self.model_name,
+            self.backend_id,
+            'to_openerp/s1.csv',
+            'to_openerp/s1.md5')
+
+        actual_attachment_b_id_second_time = create_one_file(
+            self.session,
+            self.model_name,
+            self.backend_id,
+            'to_openerp/s1.csv',
+            'to_openerp/s1.md5')
+
+        self.assertIsInstance(actual_attachment_b_id, (int, long))
+        self.assertIs(actual_attachment_b_id_second_time, None)

@@ -22,6 +22,7 @@
 import ftputil
 import os
 import base64
+from psycopg2 import IntegrityError
 
 from ..backend import file_import
 from .policy import FileGetterPolicy
@@ -99,10 +100,29 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             self.backend_record.ftp_input_folder)
 
     def create_one(self, file_name, hash_string, content):
-        return self.session.create(self.model._name, {
-            'name': file_name,
-            'datas_fname': os.path.basename(file_name),
-            'external_hash': hash_string,
-            'datas': base64.b64encode(content),
-            'backend_id': self.backend_record.id,
-        })
+        self.session.cr.execute('SAVEPOINT create_attachment')
+        initial_log_exceptions = self.session.cr._default_log_exceptions
+        self.session.cr._default_log_exceptions = False
+        try:
+            return self.session.create(self.model._name, {
+                'name': file_name,
+                'datas_fname': os.path.basename(file_name),
+                'external_hash': hash_string,
+                'datas': base64.b64encode(content),
+                'backend_id': self.backend_record.id,
+            })
+        except IntegrityError as e:
+            if 'ir_attachment_binding_document_binding_uniq' in e.message:
+                # we want our job to be idempotent: if the attachment cannot be
+                # created because it already exists, we do nothing.
+                # TODO: this actually is inefficient because we download the
+                # whole file content and then decide not to create it.
+                self.session.cr.execute(
+                    'ROLLBACK TO SAVEPOINT create_attachment'
+                )
+                return None
+            else:
+                self.session.cr.execute('RELEASE SAVEPOINT create_attachment')
+                raise
+        finally:
+            self.session.cr._default_log_exceptions = initial_log_exceptions
