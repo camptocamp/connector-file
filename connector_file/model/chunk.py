@@ -96,7 +96,8 @@ class file_chunk_binding(orm.Model):
     _sql_constraints = [
     ]
 
-    def _get_raw_data(self, file_like, line_start, line_stop):
+    @staticmethod
+    def _get_raw_data(file_like, line_start, line_stop):
         """Return raw data from the file_like, from line_start to line_stop.
 
         Note that line numbers are 1-based, while islice is 0-based.
