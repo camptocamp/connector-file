@@ -8,8 +8,9 @@ I should eventually mock that out.
 import unittest2
 from mock import Mock
 
-from ..unit.ftp_policy import FTPFileGetterPolicy
 from openerp.addons.connector.connector import Environment
+from ..unit.ftp_policy import FTPFileGetterPolicy
+from .common import expand_path
 
 
 class TestFTPGetPolicyWithoutOE(unittest2.TestCase):
@@ -22,7 +23,9 @@ class TestFTPGetPolicyWithoutOE(unittest2.TestCase):
             'ftppass',
             'to_openerp',
         )
-        self.assertEquals(actual_file_generator.next(), ('s1.csv', 's1.md5'))
+        self.assertEquals(
+            actual_file_generator.next(),
+            ('to_openerp/s1.csv', 'to_openerp/s1.md5'))
 
         with self.assertRaises(StopIteration):
             actual_file_generator.next()
@@ -39,6 +42,20 @@ class TestFTPGetPolicyWithoutOE(unittest2.TestCase):
             actual_hash_string,
             '6f7fff2b3f9762a99688bfab52f06bac'
         )
+
+    def test__get_content(self):
+        actual_content = FTPFileGetterPolicy._get_content(
+            'to_openerp/s1.csv',
+            'localhost',
+            'ftpuser',
+            'ftppass',
+            'to_openerp',
+        )
+        with open(expand_path('two_chunks.csv')) as expected_file_like:
+            self.assertEquals(
+                actual_content,
+                expected_file_like.read()
+            )
 
 
 class TestFTPGetPolicyWithOE(unittest2.TestCase):

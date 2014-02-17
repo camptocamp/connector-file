@@ -20,6 +20,7 @@
 ##############################################################################
 
 import ftputil
+import os
 
 from ..backend import file_import
 from .policy import FileGetterPolicy
@@ -45,7 +46,10 @@ class FTPFileGetterPolicy(FileGetterPolicy):
                 if file_name[-4:] == '.csv':
                     hash_file_name = file_name[:-4] + '.md5'
                     if hash_file_name in file_list:
-                        yield (file_name, hash_file_name)
+                        yield (
+                            os.path.join(ftp_input_folder, file_name),
+                            os.path.join(ftp_input_folder, hash_file_name),
+                        )
 
     def ask_files(self):
         """Yield tuples (data_file_name, hash_file_name)."""
@@ -55,6 +59,16 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             self.backend_record.ftp_user,
             self.backend.record.ftp_password,
             self.backend.record.ftp_input_folder)
+
+    @staticmethod
+    def _get_content(data_file_name, ftp_host, ftp_user, ftp_password,
+                     ftp_input_folder):
+        with ftputil.FTPHost(
+            ftp_host,
+            ftp_user,
+            ftp_password,
+        ) as host:
+            return host.open(data_file_name).read()
 
     def get_content(self, data_file_name):
         return self._get_content(
