@@ -50,15 +50,6 @@ class file_chunk(orm.Model):
         'sync_date': fields.datetime('Last synchronization date'),
     }
 
-    def load_data(self):
-        """TODO. This will load the chunk using load().
-
-        Like load(), this returns a list of the ids of the created objects
-        and a list of error messages
-
-        """
-        raise NotImplementedError
-
 
 class file_chunk_binding(orm.Model):
 

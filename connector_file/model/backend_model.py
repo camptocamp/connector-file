@@ -65,14 +65,6 @@ class file_import_backend(orm.Model):
         'version': '1',
     }
 
-    def get_all(self, cr, uid, ids, context=None):
-        pass
-
-    def parse_all_now(self, cr, uid, ids, context=None):
-        pass
-#        parser = #get unit FileParser
-#        parser.parse_all()
-
     def get_all_async(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
