@@ -36,6 +36,9 @@ A way to import CSV files using the Openerp Connector.
         'connector',
         'account',
     ],
+    'external_dependencies': {
+        'python': ['ftputil'],
+    },
     'data': [
         'view/backend_model_view.xml',
         'view/document_view.xml',
