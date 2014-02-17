@@ -91,9 +91,11 @@ class file_import_backend(orm.Model):
         if context is None:
             context = {}
 
-        session = ConnectorSession(cr, uid, context=context)
-        for backend_id in ids:
-            env = get_environment(session, 'file.chunk.binding', backend_id)
+        for backend in self.browse(cr, uid, ids, context=context):
+            # we want that moves are created with the user_id specified in the
+            # backend.
+            session = ConnectorSession(cr, backend.user_id.id, context=context)
+            env = get_environment(session, 'file.chunk.binding', backend.id)
             loader = env.get_connector_unit(AsyncChunkLoader)
             loader.load_all()
         return True
