@@ -125,9 +125,8 @@ class CSVParsePolicy(ParsePolicy):
     @staticmethod
     def _parse_header_data(data, delimiter=';', quotechar='"'):
         """Take a file-like object, and return JSON-parsed header."""
-
+        data.seek(0)
         with data as file_like:
-            file_like.seek(0)
             reader = csv.reader(
                 file_like,
                 delimiter=delimiter,
