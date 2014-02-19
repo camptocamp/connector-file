@@ -109,6 +109,7 @@ class CSVParsePolicy(ParsePolicy):
                     # field could contain newlines. We use line_num because we
                     # then use it to recover lines from the original file.
                     line_start = reader.line_num
+                    # if it is first part of chunk we reinitialize chunck array
                     chunk_array = [line]
                 else:
                     chunk_array.append(line)
