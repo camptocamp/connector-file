@@ -30,7 +30,8 @@ class MoveLoadFailedJobError(FailedJobError):
 
 
 class InvalidFileError(FailedJobError):
-    """"""
+    """This exception is raised if the file in invalid
+    That means that the file is corrupted or can not be parsed"""
     pass
 
 
