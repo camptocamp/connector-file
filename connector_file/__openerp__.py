@@ -20,7 +20,7 @@
 ##############################################################################
 
 {
--    'name': 'Connector for importing files',
+    'name': 'Connector for importing files',
     'version': '0.1',
     'category': 'Connector',
     'author': 'Camptocamp',
