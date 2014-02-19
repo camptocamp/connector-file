@@ -79,7 +79,7 @@ class CSVParsePolicy(ParsePolicy):
     @staticmethod
     def _split_data_in_chunks(data, delimiter=';', quotechar='"'):
         """Take a file-like object, and return chunk data."""
-
+        data.seek(0)
         with data as file_like:
 
             reader = csv.reader(
@@ -127,7 +127,7 @@ class CSVParsePolicy(ParsePolicy):
         """Take a file-like object, and return JSON-parsed header."""
 
         with data as file_like:
-
+            file_like.seek(0)
             reader = csv.reader(
                 file_like,
                 delimiter=delimiter,
