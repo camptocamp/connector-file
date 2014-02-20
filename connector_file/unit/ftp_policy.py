@@ -22,10 +22,12 @@
 import ftputil
 import os
 import base64
+import hashlib
 from psycopg2 import IntegrityError
 
 from ..backend import file_import
 from .policy import FileGetterPolicy
+from ..exceptions import InvalidFileError
 
 
 @file_import
@@ -89,7 +91,7 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             ftp_password,
         ) as host:
             with host.open(hash_file_name) as f:
-                return f.read()
+                return f.read().rstrip('\r\n')
 
     def get_hash(self, hash_file_name):
         return self._get_hash(
@@ -99,15 +101,48 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             self.backend_record.ftp_password,
             self.backend_record.ftp_input_folder)
 
-    def create_one(self, file_name, hash_string, content):
+    @staticmethod
+    def _compute_internal_hash(content):
+        """Return a hex md5 hash, like md5sum from GNU coreutils does."""
+        return hashlib.md5(content).digest().encode('hex')
+
+    def manage_exception(self, e, data_file_name, hash_file_name):
+        """In case of trouble, try to move the file away."""
+        if isinstance(e, InvalidFileError):
+            self.move_one(
+                data_file_name,
+                self.backend_record.ftp_input_folder,
+                self.backend_record.ftp_failed_folder,
+            )
+        else:
+            raise
+
+    def create_one(self, file_name, external_hash, content):
+        """Create one file in OpenERP.
+
+        Return id of the created object.
+
+        """
         self.session.cr.execute('SAVEPOINT create_attachment')
         initial_log_exceptions = self.session.cr._default_log_exceptions
         self.session.cr._default_log_exceptions = False
+        internal_hash = self._compute_internal_hash(content)
+        if internal_hash != external_hash:
+            raise InvalidFileError(
+                '''Hash check failed.
+                internal hash:
+                {0}
+
+                external hash:
+                {1}
+                '''.format(internal_hash, external_hash)
+            )
         try:
             return self.session.create(self.model._name, {
                 'name': file_name,
                 'datas_fname': os.path.basename(file_name),
-                'external_hash': hash_string,
+                'external_hash': external_hash,
+                'internal_hash': internal_hash,
                 'datas': base64.b64encode(content),
                 'backend_id': self.backend_record.id,
             })
@@ -126,3 +161,26 @@ class FTPFileGetterPolicy(FileGetterPolicy):
                 raise
         finally:
             self.session.cr._default_log_exceptions = initial_log_exceptions
+
+    def move_one(self, file_name, folder_from, folder_to):
+        """Move a file. Return whatever comes from the library."""
+        return self._move_one(
+            self.backend_record.ftp_host,
+            self.backend_record.ftp_user,
+            self.backend_record.ftp_password,
+            file_name,
+            folder_from,
+            folder_to)
+
+    @staticmethod
+    def _move_one(ftp_host, ftp_user, ftp_password,
+                  file_name, folder_from, folder_to):
+        with ftputil.FTPHost(
+            ftp_host,
+            ftp_user,
+            ftp_password,
+        ) as host:
+            host.rename(
+                os.path.join(folder_from, file_name),
+                os.path.join(folder_to, file_name),
+            )

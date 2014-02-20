@@ -32,6 +32,7 @@
                     <group>
                         <group string="Binding">
                             <field name="backend_id"/>
+                            <field name="internal_hash"/>
                             <field name="external_hash"/>
                             <button name="parse_now_button"
                                 string="Parse now"

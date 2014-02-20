@@ -65,11 +65,9 @@ class FileSynchronizer(BaseFileSynchronizer):
         except InvalidFileError as e:
             self.file_getter_policy_instance.manage_exception(
                 e,
-                data_file_name, hash_file_name
+                data_file_name,
+                hash_file_name
             )
-
-    def manage_file_retrieval_error(self):
-        pass
 
     def get_all(self):
         file_names = self.get_files_to_create()

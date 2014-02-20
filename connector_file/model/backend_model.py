@@ -56,7 +56,7 @@ class file_import_backend(orm.Model):
         'ftp_user': fields.char('FTP User'),
         'ftp_password': fields.char('FTP Password'),
         'ftp_input_folder': fields.char('FTP Input folder'),
-        'ftp_output_folder': fields.char('FTP Output folder'),
+        'ftp_failed_folder': fields.char('FTP Output folder'),
         'use_sftp': fields.boolean('Use SFTP'),
         'model_id': fields.many2one('ir.model', 'Model'),
     }

@@ -43,7 +43,7 @@ class TestFTPGetPolicyWithoutOE(unittest2.TestCase):
         )
         self.assertEquals(
             actual_hash_string,
-            '6f7fff2b3f9762a99688bfab52f06bac'
+            '4033316ec0c9dd8692972457944aafd9'
         )
 
     def test__get_content(self):
@@ -80,6 +80,7 @@ class TestFTPGetPolicyWithOE(common.TransactionCase):
                 'ftp_user': 'ftpuser',
                 'ftp_password': 'ftppass',
                 'ftp_input_folder': 'to_openerp',
+                'ftp_failed_folder': 'from_openerp',
             })
         self.env = Environment(
             self.backend_record,

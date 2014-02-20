@@ -68,6 +68,7 @@ class attachment_binding(orm.Model):
             'File Exchange Backend',
             required=True,
             ondelete='restrict'),
+        'internal_hash': fields.char('Internal Hash'),
         'external_hash': fields.char('External Hash'),
         'prepared_header': fields.char('Prepared Header, JSON'),
         'chunk_binding_ids': fields.one2many(
