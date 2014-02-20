@@ -24,12 +24,14 @@ from openerp.addons.connector.exception import FailedJobError
 
 
 class MoveLoadFailedJobError(FailedJobError):
+
     """This exception is raised if the load() of a move fails."""
 
     pass
 
 
 class InvalidFileError(FailedJobError):
+
     """This exception is raised if the file in invalid
     That means that the file is corrupted or can not be parsed"""
 

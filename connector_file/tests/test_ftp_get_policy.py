@@ -17,6 +17,7 @@ from .common import expand_path
 
 
 class TestFTPGetPolicyWithoutOE(unittest2.TestCase):
+
     """Unit Tests for the FTP Get Policy that do not use OpenERP."""
 
     def test__ask_files(self):
@@ -62,6 +63,7 @@ class TestFTPGetPolicyWithoutOE(unittest2.TestCase):
 
 
 class TestFTPGetPolicyWithOE(common.TransactionCase):
+
     """Integrated Tests for the FTP Get Policy that do use OpenERP."""
 
     def setUp(self):

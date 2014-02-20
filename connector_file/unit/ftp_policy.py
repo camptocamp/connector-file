@@ -19,6 +19,8 @@
 #
 ##############################################################################
 
+"""FTP Policy."""
+
 import ftputil
 import os
 import base64
@@ -32,6 +34,12 @@ from ..exceptions import InvalidFileError
 
 @file_import
 class FTPFileGetterPolicy(FileGetterPolicy):
+
+    """FTP File Getter Policy.
+
+    Manages our interactions with a FTP server.
+
+    """
 
     _model_name = 'ir.attachment.binding'
 
@@ -56,7 +64,7 @@ class FTPFileGetterPolicy(FileGetterPolicy):
                         )
 
     def ask_files(self):
-        """Yield tuples (data_file_name, hash_file_name)."""
+        """Return a generator of tuples (data_file_name, hash_file_name)."""
 
         return self._ask_files(
             self.backend_record.ftp_host,
@@ -75,6 +83,7 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             return host.open(data_file_name).read()
 
     def get_content(self, data_file_name):
+        """Return the raw content of the file."""
         return self._get_content(
             data_file_name,
             self.backend_record.ftp_host,
@@ -94,6 +103,7 @@ class FTPFileGetterPolicy(FileGetterPolicy):
                 return f.read().rstrip('\r\n')
 
     def get_hash(self, hash_file_name):
+        """Return the external hash of the file."""
         return self._get_hash(
             hash_file_name,
             self.backend_record.ftp_host,
