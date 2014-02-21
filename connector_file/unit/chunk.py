@@ -33,7 +33,15 @@ from ..unit.move_load_policy import MoveLoadPolicy
 _logger = logging.getLogger(__name__)
 LOG_EVERY = 100
 
+
 class BaseChunkLoader(ConnectorUnit):
+
+    """Base Chunk Loader.
+
+    Classes to load chunk should inherit from here.
+
+    """
+
     def __init__(self, environment):
         super(BaseChunkLoader, self).__init__(environment)
         self._load_policy_instance = None
@@ -41,15 +49,17 @@ class BaseChunkLoader(ConnectorUnit):
 
 class ChunkLoader(BaseChunkLoader):
 
-    """create jobs to manage chunk loading"""
+    """Create jobs to manage chunk loading."""
 
     _model_name = 'file.chunk.binding'
 
     def get_chunks_to_load(self):
+        """Return a list of chunks that need to be loaded."""
         policy = self.load_policy_instance
         return policy.get_chunks_to_load()
 
     def load_one_chunk(self, chunk_binding_id):
+        """Load a chunk in OpenERP. Normally called by a job."""
         policy = self.load_policy_instance
         _logger.info(
             u'Loading chunk binding {0} now'.format(chunk_binding_id)
@@ -57,6 +67,7 @@ class ChunkLoader(BaseChunkLoader):
         policy.load_one_chunk(chunk_binding_id)
 
     def load_all(self):
+        """Create jobs for loading all chunks."""
         ids = self.get_chunks_to_load()
         _logger.info(
             u'I will now create {0} jobs for loading.'.format(len(ids))
@@ -75,8 +86,7 @@ class ChunkLoader(BaseChunkLoader):
 
     @property
     def load_policy_instance(self):
-        """ Return an instance of ``CSVParsePolicy`` for the
-        synchronization.
+        """ Return an instance of ``CSVParsePolicy``.
 
         The instanciation is delayed because some synchronisations do
         not need such an unit and the unit may not exist.
@@ -99,4 +109,7 @@ def load_one_chunk(session, model_name, backend_id, chunk_binding_id):
 
 @file_import
 class AsyncChunkLoader(ChunkLoader):
+
+    """Async-specific code."""
+
     pass

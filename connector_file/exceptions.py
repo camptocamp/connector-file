@@ -32,8 +32,11 @@ class MoveLoadFailedJobError(FailedJobError):
 
 class InvalidFileError(FailedJobError):
 
-    """This exception is raised if the file in invalid
-    That means that the file is corrupted or can not be parsed"""
+    """This exception is raised if the file in invalid.
+
+    That means that the file is corrupted or can not be parsed
+
+    """
 
     pass
 
@@ -46,4 +49,7 @@ class MoveFileError(FailedJobError):
 
 
 class ParseError(FailedJobError):
+
+    """Error during the Parse Phase."""
+
     pass

@@ -32,6 +32,9 @@ from .policy import FileGetterErrorPolicy
 
 
 class BaseFileSynchronizer(ImportSynchronizer):
+
+    """Base Synchronizer for file import."""
+
     def __init__(self, environment):
         super(Synchronizer, self).__init__(environment)
         self._file_getter_policy_instance = None
@@ -39,8 +42,7 @@ class BaseFileSynchronizer(ImportSynchronizer):
 
     @property
     def file_getter_policy_instance(self):
-        """ Return an instance of ``FTPFileGetterPolicy`` for the
-        synchronization.
+        """ Return an instance of ``FTPFileGetterPolicy``.
 
         The instanciation is delayed because some synchronisations do
         not need such an unit and the unit may not exist.
@@ -54,13 +56,13 @@ class BaseFileSynchronizer(ImportSynchronizer):
 
     @property
     def file_getter_error_policy(self):
-        """ Return an instance of ``FileGetterErrorPolicy`` for the
-        synchronization.
+        """ Return an instance of ``FileGetterErrorPolicy``.
 
         The instanciation is delayed because some synchronisations do
         not need such an unit and the unit may not exist.
 
         :rtype: :py:class:`connector_file.unit.policy.FileGetterErrorPolicy`
+
         """
         if self._file_getter_error_policy is None:
             self._file_getter_error_policy = (

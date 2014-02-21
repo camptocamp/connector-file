@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
+"""Policy for parsing CSV files into chunks."""
 import csv
 import simplejson
 from datetime import datetime
@@ -32,9 +32,12 @@ from .policy import ParsePolicy
 @file_import
 class CSVParsePolicy(ParsePolicy):
 
+    """Policy to parse a CSV file into chunks with JSON data."""
+
     _model_name = 'ir.attachment.binding'
 
     def ask_files(self):
+        """Return a list of files to parse."""
         return self.session.search(self._model_name, [
             ('sync_date', '=', False)
         ])

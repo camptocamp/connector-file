@@ -28,24 +28,56 @@ _logger = logging.getLogger(__name__)
 
 
 class Policy(ConnectorUnit):
-    pass
 
+    """Abstract Policy.
 
-class ParsePolicy(Policy):
+    A Policy is a generic unit containing the specific logic to handle
+    a step of the file import process.
+
+    """
+
     pass
 
 
 class FileGetterPolicy(Policy):
+
+    """Abstract FileGetterPolicy.
+
+    Base class for policies that handle getting a file from an external source
+    into an OpenERP attachment.
+
+    """
+
     pass
 
 
 class FileGetterErrorPolicy(Policy):
+
+    """Base class for policies to handle errors in the FileGetter."""
+
+    pass
+
+
+class ParsePolicy(Policy):
+
+    """Abstract ParsePolicy.
+
+    A ParsePolicy deals with splitting a file (ir.attachment) into chunks.
+
+    """
+
     pass
 
 
 class ParseErrorPolicy(Policy):
+
+    """Base class for policies that handle errors in the Parse."""
+
     pass
 
 
 class LoadPolicy(Policy):
+
+    """Base class for policies that load a chunk into OpenERP."""
+
     pass

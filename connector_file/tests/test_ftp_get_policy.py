@@ -112,8 +112,12 @@ class TestFTPGetPolicyWithOE(common.TransactionCase):
             )
 
     def test_create_file_uniq(self):
-        """Test that if the job to create a file is executed many times,
-        just one file is created, without raising exceptions."""
+        """Test idempotency of file creation.
+
+        We check that if the job to create a file is executed many times,
+        just one file is created, without raising exceptions.
+
+        """
 
         actual_attachment_b_id = create_one_file(
             self.session,

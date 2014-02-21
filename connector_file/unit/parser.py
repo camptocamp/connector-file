@@ -42,7 +42,9 @@ class BaseParser(ImportSynchronizer):
         self._parse_error_policy = None
 
     def ask_files(self):
+        """Defined in specific parsers."""
         raise NotImplementedError
 
     def parse_one_file(self, attachment_binding_id):
+        """Defined in specific parse."""
         raise NotImplementedError

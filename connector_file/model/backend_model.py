@@ -66,6 +66,13 @@ class file_import_backend(orm.Model):
     }
 
     def get_all_async(self, cr, uid, ids, context=None):
+        """Anynchronously get all files from the remote repository.
+
+        This method is called by a button on the interface, or by a cron job.
+        Return True action.
+
+        """
+
         if context is None:
             context = {}
 
@@ -77,6 +84,12 @@ class file_import_backend(orm.Model):
         return True
 
     def parse_all_async(self, cr, uid, ids, context=None):
+        """Anynchronously parse all attachments into chunks.
+
+        This method is called by a button on the interface, or by a cron job.
+        Return True action.
+
+        """
         if context is None:
             context = {}
 
@@ -88,6 +101,12 @@ class file_import_backend(orm.Model):
         return True
 
     def load_all_async(self, cr, uid, ids, context=None):
+        """Anynchronously load all chunks in OpenERP.
+
+        This method is called by a button on the interface, or by a cron job.
+        Return True action.
+
+        """
         if context is None:
             context = {}
 

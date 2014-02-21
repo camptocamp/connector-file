@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
+"""Module for the MoveLoadPolicy."""
 import simplejson as json
 
 from ..backend import file_import
@@ -29,9 +29,16 @@ from ..exceptions import MoveLoadFailedJobError
 @file_import
 class MoveLoadPolicy(LoadPolicy):
 
+    """Policy to load a chunk into an account.move.
+
+    This uses the openerp standard load().
+
+    """
+
     _model_name = 'file.chunk.binding'
 
     def get_chunks_to_load(self):
+        """Return a list of ids of chunks to be loaded."""
         return self.session.search(self._model_name, [
             ('sync_date', '=', False)
         ])

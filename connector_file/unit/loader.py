@@ -41,7 +41,9 @@ class BaseLoader(ImportSynchronizer):
         self._load_error_policy = None
 
     def ask_files(self):
+        """Defined in specific loaders."""
         raise NotImplementedError
 
     def load_one(self, chunk_binding_id):
+        """Defined in specific loaders."""
         raise NotImplementedError
