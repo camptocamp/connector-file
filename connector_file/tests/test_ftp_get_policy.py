@@ -26,6 +26,7 @@ class TestFTPGetPolicyWithoutOE(unittest2.TestCase):
             'ftpuser',
             'ftppass',
             'to_openerp',
+            '',
         )
         self.assertEquals(
             actual_file_generator.next(),
