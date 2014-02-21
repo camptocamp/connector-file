@@ -44,5 +44,5 @@ class BaseParser(ImportSynchronizer):
     def ask_files(self):
         raise NotImplementedError
 
-    def parse_one(self, attachment_binding_id):
+    def parse_one_file(self, attachment_binding_id):
         raise NotImplementedError

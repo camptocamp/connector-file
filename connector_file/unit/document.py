@@ -134,7 +134,7 @@ class FileParser(BaseParser):
         ids = self.get_files_to_parse()
         _logger.info(u'Jobs to parse {0} files put in queue'.format(len(ids)))
         for attachment_binding_id in ids:
-            create_one_file.delay(
+            parse_one_file.delay(
                 self.session,
                 self._model_name,
                 self.backend_record.id,
@@ -169,7 +169,7 @@ def parse_one_file(session, model_name, backend_id, attachment_binding_id):
     """Parse one file to produce chunks."""
     env = get_environment(session, model_name, backend_id)
     parser = env.get_connector_unit(AsyncFileParser)
-    parser.create_one_file(attachment_binding_id)
+    parser.parse_one_file(attachment_binding_id)
 
 
 @file_import
