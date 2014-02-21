@@ -24,6 +24,7 @@
                                 <field name="ftp_password"/>
                                 <field name="ftp_input_folder"/>
                                 <field name="ftp_failed_folder"/>
+                                <field name="file_name_regexp"/>
                                 <field name="use_sftp"/>
                             </group>
                         </group>

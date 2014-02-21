@@ -49,7 +49,7 @@ class file_import_backend(orm.Model):
             string='Version',
             required=True),
         'company_id': fields.many2one('res.company', 'Company'),
-        'file_regexp': fields.char('File regexp', size=64),
+        'file_name_regexp': fields.char('File Name regexp', size=64),
         'user_id': fields.many2one('res.users', 'User'),
         'ftp_host': fields.char('FTP Host'),
         'ftp_port': fields.char('FTP Port'),

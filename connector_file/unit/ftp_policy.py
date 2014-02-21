@@ -25,6 +25,7 @@ import ftputil
 import os
 import base64
 import hashlib
+import re
 from psycopg2 import IntegrityError
 
 from ..backend import file_import
@@ -47,7 +48,8 @@ class FTPFileGetterPolicy(FileGetterPolicy):
         pass
 
     @staticmethod
-    def _ask_files(ftp_host, ftp_user, ftp_password, ftp_input_folder):
+    def _ask_files(ftp_host, ftp_user, ftp_password, ftp_input_folder,
+                   file_name_regexp):
         with ftputil.FTPHost(
             ftp_host,
             ftp_user,
@@ -55,13 +57,14 @@ class FTPFileGetterPolicy(FileGetterPolicy):
         ) as host:
             file_list = host.listdir(ftp_input_folder)
             for file_name in file_list:
-                if file_name[-4:] == '.csv':
-                    hash_file_name = file_name[:-4] + '.md5'
-                    if hash_file_name in file_list:
-                        yield (
-                            os.path.join(ftp_input_folder, file_name),
-                            os.path.join(ftp_input_folder, hash_file_name),
-                        )
+                if re.search(file_name_regexp, file_name):
+                    if file_name[-4:] == '.csv':
+                        hash_file_name = file_name[:-4] + '.md5'
+                        if hash_file_name in file_list:
+                            yield (
+                                os.path.join(ftp_input_folder, file_name),
+                                os.path.join(ftp_input_folder, hash_file_name),
+                            )
 
     def ask_files(self):
         """Return a generator of tuples (data_file_name, hash_file_name)."""
@@ -70,7 +73,8 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             self.backend_record.ftp_host,
             self.backend_record.ftp_user,
             self.backend_record.ftp_password,
-            self.backend_record.ftp_input_folder)
+            self.backend_record.ftp_input_folder,
+            self.backend_record.file_name_regexp)
 
     @staticmethod
     def _get_content(data_file_name, ftp_host, ftp_user, ftp_password,
