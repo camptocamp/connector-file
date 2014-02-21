@@ -1,2 +1,5 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-access_file_chunk,access_file_chunk,model_file_chunk,,1,1,1,1
+access_file_import_backend,access_file_import_backend,model_file_import_backend,connector.group_connector_manager,1,1,1,1
+access_file_chunk,access_file_chunk,model_file_chunk,connector.group_connector_manager,1,1,1,1
+access_file_chunk_binding,access_file_chunk_binding,model_file_chunk_binding,connector.group_connector_manager,1,1,1,1
+access_ir_attachment_binding,access_ir_attachment_binding,model_ir_attachment_binding,connector.group_connector_manager,1,1,1,1
