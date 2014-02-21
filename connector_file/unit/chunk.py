@@ -31,7 +31,7 @@ from ..connector import get_environment
 from ..unit.move_load_policy import MoveLoadPolicy
 
 _logger = logging.getLogger(__name__)
-
+LOG_EVERY = 100
 
 class BaseChunkLoader(ConnectorUnit):
     def __init__(self, environment):
@@ -58,11 +58,18 @@ class ChunkLoader(BaseChunkLoader):
 
     def load_all(self):
         ids = self.get_chunks_to_load()
-        for chunk_binding_id in ids:
+        _logger.info(
+            u'I will now create {0} jobs for loading.'.format(len(ids))
+        )
+        # I take that out of the loop to make it a bit faster.
+        backend_record_id = self.backend_record.id
+        for count, chunk_binding_id in enumerate(ids):
+            if count % LOG_EVERY == 0:
+                _logger.info('{0} jobs created'.format(count))
             load_one_chunk.delay(
                 self.session,
                 self._model_name,
-                self.backend_record.id,
+                backend_record_id,
                 chunk_binding_id)
         _logger.info(u'Jobs to load {0} chunks put in queue'.format(len(ids)))
 
