@@ -52,12 +52,12 @@ class file_import_backend(orm.Model):
         'file_name_regexp': fields.char('File Name regexp', size=64),
         'user_id': fields.many2one('res.users', 'User'),
         'ftp_host': fields.char('FTP Host'),
-        'ftp_port': fields.char('FTP Port'),
+        'ftp_port': fields.char('FTP Port (not implemented)'),
         'ftp_user': fields.char('FTP User'),
         'ftp_password': fields.char('FTP Password'),
         'ftp_input_folder': fields.char('FTP Input folder'),
         'ftp_failed_folder': fields.char('FTP Output folder'),
-        'use_sftp': fields.boolean('Use SFTP'),
+        'use_sftp': fields.boolean('Use SFTP (not implemented)'),
         'model_id': fields.many2one('ir.model', 'Model'),
     }
 

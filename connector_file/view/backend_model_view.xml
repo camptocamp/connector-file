@@ -21,13 +21,11 @@
                             </group>
                             <group>
                                 <field name="ftp_host"/>
-                                <field name="ftp_port"/>
                                 <field name="ftp_user"/>
                                 <field name="ftp_password"/>
                                 <field name="ftp_input_folder"/>
                                 <field name="ftp_failed_folder"/>
                                 <field name="file_name_regexp"/>
-                                <field name="use_sftp"/>
                             </group>
                         </group>
                         <notebook>
