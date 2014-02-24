@@ -15,9 +15,11 @@
                             <field name="name" class="oe_inline" />
                         </h1>
                         <group string="File Import Configuration">
-                            <group colspan="4" col="4">
+                            <group>
                                 <field name="company_id"/>
                                 <field name="user_id"/>
+                            </group>
+                            <group>
                                 <field name="ftp_host"/>
                                 <field name="ftp_port"/>
                                 <field name="ftp_user"/>
@@ -39,7 +41,7 @@
                                     they will create 'Jobs'
                                     executed as soon as possible.
                                 </p>
-                                <group>
+                                <group col="3">
                                     <button name="get_all_async"
                                         type="object"
                                         class="oe_highlight"
