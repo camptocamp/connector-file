@@ -34,10 +34,18 @@
                                     By clicking on the buttons,
                                     you will initiate the synchronizations
                                     with CSV Files.
-                                    Note that the import or exports
-                                    won't be done directly,
-                                    they will create 'Jobs'
-                                    executed as soon as possible.
+                                    Note that the actual work
+                                    will not be done directly. Instaed, 'Jobs'
+                                    will be created and
+                                    executed as soon as possible. Normally,
+                                    these buttons are not pressed directly,
+                                    but a cron job should be set up for
+                                    performing each of those tasks regularly.
+                                    Note that creating the jobs is fast, but
+                                    can still take a few minutes if there are
+                                    many thousands of lines to load. This is
+                                    normal, and should not be an issue when
+                                    that is performed by cron jobs.
                                 </p>
                                 <group col="3">
                                     <button name="get_all_async"
