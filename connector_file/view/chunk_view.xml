@@ -6,8 +6,7 @@
             <field name="model">file.chunk.binding</field>
             <field name="arch" type="xml">
                 <form string="Chunk Bindings" version="7.0">
-                   <sheet>
-                    <group>
+                    <sheet>
                         <group string="Binding">
                             <field name="backend_id"/>
                             <field name="move_id"/>
@@ -16,23 +15,32 @@
                         <group string="Document Binding">
                             <field name="attachment_binding_id"/>
                         </group>
-                        <group string="Data">
+                        <group string="Lines of the original file">
                             <field name="line_start"/>
                             <field name="line_stop"/>
-                            <field name="prepared_header"/>
-                            <field name="prepared_data"/>
-                            <field name="raw_data"/>
-                            <button name="get_raw_button"
-                                type="object"
-                                class="oe_highlight"
-                                string="Get Raw Data"/>
+                        </group>
+                        <group string="Prepared header, JSON">
+                            <field name="prepared_header" nolabel="1" colspan="2"/>
+                        </group>
+                        <group string="Prepared data, JSON">
+                            <field name="prepared_data" nolabel="1" colspan="2"/>
+                        </group>
                             <button name="load_now_button"
                                 type="object"
                                 class="oe_highlight"
                                 string="Load Chunk immediately"/>
+                        <group string="Get raw data">
+                            <group>
+                                <button name="get_raw_button"
+                                    type="object"
+                                    class="oe_highlight"
+                                    string="Extract Raw Data for this chunk from original file"/>
+                            </group>
+                            <group>
+                                <field name="raw_data"/>
+                            </group>
                         </group>
-                    </group>
-                  </sheet>
+                    </sheet>
                 </form>
             </field>
         </record>
