@@ -76,9 +76,10 @@ class file_import_backend(orm.Model):
         if context is None:
             context = {}
 
-        session = ConnectorSession(cr, uid, context=context)
-        for backend_id in ids:
-            env = get_environment(session, 'ir.attachment.binding', backend_id)
+        for backend in self.browse(cr, uid, ids, context=context):
+            # all the work is done by the user configured in the backend
+            session = ConnectorSession(cr, backend.user_id.id, context=context)
+            env = get_environment(session, 'ir.attachment.binding', backend.id)
             getr = env.get_connector_unit(AsyncFileSynchronizer)
             getr.get_all()
         return True
@@ -93,9 +94,10 @@ class file_import_backend(orm.Model):
         if context is None:
             context = {}
 
-        session = ConnectorSession(cr, uid, context=context)
-        for backend_id in ids:
-            env = get_environment(session, 'ir.attachment.binding', backend_id)
+        for backend in self.browse(cr, uid, ids, context=context):
+            # all the work is done by the user configured in the backend
+            session = ConnectorSession(cr, backend.user_id.id, context=context)
+            env = get_environment(session, 'ir.attachment.binding', backend.id)
             parser = env.get_connector_unit(AsyncFileParser)
             parser.parse_all()
         return True
@@ -111,8 +113,7 @@ class file_import_backend(orm.Model):
             context = {}
 
         for backend in self.browse(cr, uid, ids, context=context):
-            # we want that moves are created with the user_id specified in the
-            # backend.
+            # all the work is done by the user configured in the backend
             session = ConnectorSession(cr, backend.user_id.id, context=context)
             env = get_environment(session, 'file.chunk.binding', backend.id)
             loader = env.get_connector_unit(AsyncChunkLoader)
