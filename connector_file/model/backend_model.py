@@ -119,3 +119,21 @@ class file_import_backend(orm.Model):
             loader = env.get_connector_unit(AsyncChunkLoader)
             loader.load_all()
         return True
+
+    def cron_get_all_async(self, cr, uid, ids=None, context=None):
+        """Call this from a cron job: run on all backends."""
+        backend_ids = self.search(cr, uid, [], context=context)
+        self.get_all_async(cr, uid, backend_ids, context=context)
+        return True
+
+    def cron_parse_all_async(self, cr, uid, ids=None, context=None):
+        """Call this from a cron job: run on all backends."""
+        backend_ids = self.search(cr, uid, [], context=context)
+        self.parse_all_async(cr, uid, backend_ids, context=context)
+        return True
+
+    def cron_load_all_async(self, cr, uid, ids=None, context=None):
+        """Call this from a cron job: run on all backends."""
+        backend_ids = self.search(cr, uid, [], context=context)
+        self.load_all_async(cr, uid, backend_ids, context=context)
+        return True
