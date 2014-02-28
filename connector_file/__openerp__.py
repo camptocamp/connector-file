@@ -72,6 +72,7 @@ jobs, Synchronizers and Units:
         'action.xml',
         'menu.xml',
         'security/ir.model.access.csv',
+        'data/cron.xml',
     ],
     'installable': True,
 }

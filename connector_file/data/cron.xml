@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+    <record forcecreate="True" id="cron_get_all_async" model="ir.cron">
+      <field name="name">CSV Import step 1: download files</field>
+      <field name="active" eval="False"/>
+      <field name="user_id" ref="base.user_root" />
+      <field name="interval_number">1</field>
+      <field name="interval_type">days</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall" />
+      <field name="model">file_import.backend</field>
+      <field name="function">cron_get_all_async</field>
+      <field name="args">()</field>
+    </record>
+    <record forcecreate="True" id="cron_parse_all_async" model="ir.cron">
+      <field name="name">CSV Import step 2: parse files</field>
+      <field name="active" eval="False"/>
+      <field name="user_id" ref="base.user_root" />
+      <field name="interval_number">1</field>
+      <field name="interval_type">days</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall" />
+      <field name="model">file_import.backend</field>
+      <field name="function">cron_parse_all_async</field>
+      <field name="args">()</field>
+    </record>
+    <record forcecreate="True" id="cron_load_all_async" model="ir.cron">
+      <field name="name">CSV Import step 3: load chunks</field>
+      <field name="active" eval="False"/>
+      <field name="user_id" ref="base.user_root" />
+      <field name="interval_number">1</field>
+      <field name="interval_type">days</field>
+      <field name="numbercall">-1</field>
+      <field eval="False" name="doall" />
+      <field name="model">file_import.backend</field>
+      <field name="function">cron_load_all_async</field>
+      <field name="args">()</field>
+    </record>
+  </data>
+</openerp>
