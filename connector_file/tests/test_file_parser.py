@@ -1,25 +1,21 @@
 import base64
+from mock import Mock
 
 from openerp.tests import common
 from openerp.addons.connector.session import ConnectorSession
+from openerp.addons.connector.connector import Environment
 
 from .common import expand_path
-
-# create a attachmend.binding that gives a parse error
-
-# FileParser.parse_one_file()
-
-# no exception raised
-
-# document binding should have state and message.
+from ..unit.csv_policy import CSVParsePolicy
 
 
 class TestFileParserError(common.TransactionCase):
 
     def setUp(self):
         super(TestFileParserError, self).setUp()
+        self.backend_record = Mock()
         self.session = ConnectorSession(self.cr, self.uid)
-
+        self.model_name = 'ir.attachment.binding'
         self.backend_id = self.session.create(
             'file_import.backend',
             {
@@ -31,7 +27,15 @@ class TestFileParserError(common.TransactionCase):
                 'ftp_failed_folder': 'from_openerp',
             })
 
-    def test_new_binding_state_pending(self):
+        self.env = Environment(
+            self.backend_record,
+            self.session,
+            self.model_name
+        )
+
+        self.policy = CSVParsePolicy(self.env)
+
+    def test_new_attachment_binding_state_pending(self):
         """A new file should have state pending."""
         with open(expand_path('two_chunks.csv')) as input_file:
             file_content = input_file.read()
@@ -49,3 +53,24 @@ class TestFileParserError(common.TransactionCase):
             document_id)
 
         self.assertEquals(document.parse_state, 'pending')
+
+    def test_parse_one_state_done(self):
+        """If a file is parsed, the state of the file should be 'done'."""
+
+        with open(expand_path('two_chunks.csv')) as input_file:
+            file_content = input_file.read()
+
+        document_id = self.session.create(
+            'ir.attachment.binding', {
+                'datas': base64.b64encode(file_content),
+                'datas_fname': 'two_chunks.csv',
+                'name': 'two_chunks.csv',
+                'backend_id': self.backend_id,
+            })
+
+        document = self.session.browse(
+            'ir.attachment.binding',
+            document_id)
+        self.policy.parse_one(document_id)
+
+        self.assertEquals(document.parse_state, 'done')

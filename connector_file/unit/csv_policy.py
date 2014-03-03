@@ -56,12 +56,12 @@ class CSVParsePolicy(ParsePolicy):
             [attachment_b_id],
             context=s.context
         )
-
         self.model.write(s.cr, s.uid, attachment_b_id, {
             'prepared_header': self._parse_header_data(file_like),
             'sync_date': datetime.now().strftime(
                 DEFAULT_SERVER_DATETIME_FORMAT
-            )
+            ),
+            'parse_state': 'done',
         })
 
         file_like_2 = self.model.get_file_like(
