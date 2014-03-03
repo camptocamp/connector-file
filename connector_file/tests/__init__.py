@@ -26,6 +26,7 @@ from . import test_csv_parse_policy
 # from . import test_ftp_get_policy
 from . import test_chunk
 from . import test_document_parse_state
+from . import test_chunk_load_state
 
 fast_suite = [
 ]
@@ -35,4 +36,5 @@ checks = [
     # test_ftp_get_policy,
     test_chunk,
     test_document_parse_state,
+    test_chunk_load_state,
 ]

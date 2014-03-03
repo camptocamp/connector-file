@@ -88,9 +88,15 @@ class file_chunk_binding(orm.Model):
             type='char',
             string='Prepared Header (JSON)',
         ),
+        'load_state': fields.selection(
+            [('pending', 'Pending'), ('failed', 'Failed'), ('done', 'Done')],
+            string='State of the Load process',
+            readonly=True,
+            required=True),
     }
 
     _defaults = {
+        'load_state': 'pending',
     }
 
     _sql_constraints = [
