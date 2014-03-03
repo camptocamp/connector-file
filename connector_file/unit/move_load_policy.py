@@ -20,6 +20,9 @@
 ##############################################################################
 """Module for the MoveLoadPolicy."""
 import simplejson as json
+from datetime import datetime
+
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 from ..backend import file_import
 from .policy import LoadPolicy
@@ -40,7 +43,8 @@ class MoveLoadPolicy(LoadPolicy):
     def get_chunks_to_load(self):
         """Return a list of ids of chunks to be loaded."""
         return self.session.search(self._model_name, [
-            ('sync_date', '=', False)
+            ('sync_date', '=', False),
+            ('backend_id', '=', self.backend_record.id),
         ])
 
     def load_one_chunk(self, chunk_b_id):
@@ -68,7 +72,10 @@ class MoveLoadPolicy(LoadPolicy):
 
         if load_result['ids']:
             chunk_b.write({
-                'move_id': load_result['ids'][0]
+                'move_id': load_result['ids'][0],
+                'sync_date': datetime.now().strftime(
+                    DEFAULT_SERVER_DATETIME_FORMAT
+                ),
             }, context=s.context)
         else:
             raise MoveLoadFailedJobError(

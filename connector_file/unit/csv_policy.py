@@ -39,7 +39,8 @@ class CSVParsePolicy(ParsePolicy):
     def ask_files(self):
         """Return a list of files to parse."""
         return self.session.search(self._model_name, [
-            ('sync_date', '=', False)
+            ('sync_date', '=', False),
+            ('backend_id', '=', self.backend_record.id),
         ])
 
     def parse_one(self, attachment_b_id):
