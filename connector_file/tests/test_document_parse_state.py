@@ -9,10 +9,10 @@ from .common import expand_path
 from ..unit.csv_policy import CSVParsePolicy
 
 
-class TestFileParserError(common.TransactionCase):
+class TestDocumentParseState(common.TransactionCase):
 
     def setUp(self):
-        super(TestFileParserError, self).setUp()
+        super(TestDocumentParseState, self).setUp()
         self.backend_record = Mock()
         self.session = ConnectorSession(self.cr, self.uid)
         self.model_name = 'ir.attachment.binding'
