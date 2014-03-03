@@ -52,6 +52,7 @@
                     <field name="attachment_binding_id"/>
                     <field name="line_start"/>
                     <field name="line_stop"/>
+                    <field name="sync_date"/>
                 </tree>
             </field>
         </record>

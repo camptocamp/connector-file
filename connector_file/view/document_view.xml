@@ -85,6 +85,7 @@
                 </form>
             </field>
         </record>
+
         <record id="view_attachment_binding_tree" model="ir.ui.view">
             <field name="model">ir.attachment.binding</field>
             <field name="arch" type="xml">
@@ -95,9 +96,11 @@
                     <field name="company_id" groups="base.group_multi_company"/>
                     <field name="create_uid"/>
                     <field name="create_date"/>
+                    <field name="sync_date"/>
                 </tree>
             </field>
         </record>
+
         <record id="view_attachment_binding_search" model="ir.ui.view">
             <field name="model">ir.attachment.binding</field>
             <field name="arch" type="xml">
