@@ -6,6 +6,12 @@
             <field name="model">file.chunk.binding</field>
             <field name="arch" type="xml">
                 <form string="Chunk Bindings" version="7.0">
+                    <header>
+                        <field name="load_state"
+                            widget="statusbar"
+                            statusbar_visible="pending,done"
+                            statusbar_colors='{"failed":"red","done":"green"}'/>
+                    </header>
                     <sheet>
                         <group string="Binding">
                             <field name="backend_id"/>
@@ -40,6 +46,9 @@
                                 <field name="raw_data"/>
                             </group>
                         </group>
+                        <group name="exc_info" string="Exception Information" attrs="{'invisible': [('exc_info', '=', False)]}">
+                            <field nolabel="1" name="exc_info"/>
+                        </group>
                     </sheet>
                 </form>
             </field>
@@ -48,11 +57,12 @@
         <record id="view_chunk_binding_tree" model="ir.ui.view">
             <field name="model">file.chunk.binding</field>
             <field name="arch" type="xml">
-                <tree string="Chunk Bindings">
+                <tree string="Chunk Bindings" colors="red:load_state == 'failed';gray:load_state == 'done'">
                     <field name="attachment_binding_id"/>
                     <field name="line_start"/>
                     <field name="line_stop"/>
                     <field name="sync_date"/>
+                    <field name="load_state"/>
                 </tree>
             </field>
         </record>
@@ -64,6 +74,12 @@
                     <field name="attachment_binding_id"/>
                     <field name="line_start"/>
                     <field name="line_stop"/>
+                    <filter name="pending" string="Pending"
+                        domain="[('load_state', '=', 'pending')]"/>
+                    <filter name="done" string="Done"
+                        domain="[('load_state', '=', 'done')]"/>
+                    <filter name="failed" string="Failed"
+                        domain="[('load_state', '=', 'failed')]"/>
                 </search>
             </field>
         </record>

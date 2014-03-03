@@ -24,6 +24,12 @@
             <field name="model">ir.attachment.binding</field>
             <field name="arch" type="xml">
                 <form string="Attachment Bindings" version="7.0">
+                    <header>
+                        <field name="parse_state"
+                            widget="statusbar"
+                            statusbar_visible="pending,done"
+                            statusbar_colors='{"failed":"red","done":"green"}'/>
+                    </header>
                    <sheet>
                     <label for="name" class="oe_edit_only"/>
                     <h1>
@@ -89,7 +95,7 @@
         <record id="view_attachment_binding_tree" model="ir.ui.view">
             <field name="model">ir.attachment.binding</field>
             <field name="arch" type="xml">
-                <tree string="Attachment Bindings">
+                <tree string="Attachment Bindings" colors="red:parse_state == 'failed';gray:parse_state == 'done'">
                     <field name="name"/>
                     <field name="datas_fname"/>
                     <field name="type" invisible="1"/>
@@ -97,6 +103,7 @@
                     <field name="create_uid"/>
                     <field name="create_date"/>
                     <field name="sync_date"/>
+                    <field name="parse_state"/>
                 </tree>
             </field>
         </record>
@@ -127,6 +134,12 @@
                         <filter string="Company" icon="terp-gtk-home" domain="[]" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
                         <filter string="Month" help="Creation Month" icon="terp-go-month" domain="[]" context="{'group_by':'create_date'}"/>
                     </group>
+                    <filter name="pending" string="Pending"
+                        domain="[('parse_state', '=', 'pending')]"/>
+                    <filter name="done" string="Done"
+                        domain="[('parse_state', '=', 'done')]"/>
+                    <filter name="failed" string="Failed"
+                        domain="[('parse_state', '=', 'failed')]"/>
                 </search>
             </field>
         </record>
