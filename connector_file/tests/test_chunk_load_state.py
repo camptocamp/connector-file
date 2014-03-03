@@ -35,6 +35,8 @@ class TestChunkLoadState(common.TransactionCase):
 
         self.policy = MoveLoadPolicy(self.env)
 
+        self.parsed_header = '["ref", "date", "period_id", "journal_id", "line_id/account_id", "line_id/partner_id", "line_id/name", "line_id/analytic_account_id", "line_id/debit", "line_id/credit", "line_id/tax_code_id"]'  # noqa
+
         self.parsed_chunk = '[["1728274", "2014-02-02", "02\\\\/2014", "Sales Journal - (test)", "X11001", "Bank Wealthy and sons", "Camptocamp", "", "37.8", "", ""], ["", "", "", "", "X1111", "Bank Wealthy and sons", "Camptocamp", "AA009", "", "31.5", "taxcode1"], ["", "", "", "", "X2001", "Bank Wealthy and sons", "Camptocamp", "AA001", "", "3.83", "taxcode1"], ["", "", "", "", "X2110", "Bank Wealthy and sons", "Camptocamp", "AA001", "3.83", "", "taxcode1"], ["", "", "", "", "X1000", "Bank Wealthy and sons", "Camptocamp", "", "", "6.3", "taxcode2"], ["", "", "", "", "X1000", "Bank Wealthy and sons", "Camptocamp", "", "", "-0", "taxcode2"]]'  # noqa
 
         with open(expand_path('two_chunks.csv')) as input_file:
@@ -46,6 +48,7 @@ class TestChunkLoadState(common.TransactionCase):
                 'datas_fname': 'two_chunks.csv',
                 'name': 'two_chunks.csv',
                 'backend_id': self.backend_id,
+                'prepared_header': self.parsed_header,
             })
 
     def test_new_chunk_binding_state_pending(self):
@@ -62,3 +65,20 @@ class TestChunkLoadState(common.TransactionCase):
             chunk_id)
 
         self.assertEquals(chunk.load_state, 'pending')
+
+    def test_chunk_load_state_done(self):
+        """Once loaded, a chunk should have state done."""
+        chunk_id = self.session.create(
+            'file.chunk.binding', {
+                'prepared_data': self.parsed_chunk,
+                'backend_id': self.backend_id,
+                'attachment_binding_id': self.document_id,
+            })
+
+        chunk = self.session.browse(
+            'file.chunk.binding',
+            chunk_id)
+
+        self.policy.load_one_chunk(chunk_id)
+
+        self.assertEquals(chunk.load_state, 'done')

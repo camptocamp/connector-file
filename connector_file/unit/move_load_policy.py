@@ -76,6 +76,7 @@ class MoveLoadPolicy(LoadPolicy):
                 'sync_date': datetime.now().strftime(
                     DEFAULT_SERVER_DATETIME_FORMAT
                 ),
+                'load_state': 'done',
             }, context=s.context)
         else:
             raise MoveLoadFailedJobError(
