@@ -73,7 +73,6 @@ class TestFTPGetPolicyWithOE(common.TransactionCase):
         self.session = ConnectorSession(self.cr, self.uid)
         self.model_name = 'ir.attachment.binding'
         self.backend_model = self.registry('file_import.backend')
-        self.attachment_b_model = self.registry('file_import.backend')
         self.backend_id = self.backend_model.create(
             self.cr,
             self.uid,
