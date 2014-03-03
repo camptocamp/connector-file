@@ -77,9 +77,15 @@ class attachment_binding(orm.Model):
             'Chunk Bindings',
         ),
         'sync_date': fields.datetime('Last synchronization date'),
+        'parse_state': fields.selection(
+            [('pending', 'Pending'), ('failed', 'Failed'), ('done', 'Done')],
+            string='State of the Parse process',
+            readonly=True,
+            required=True),
     }
 
     _defaults = {
+        'parse_state': 'pending',
     }
 
     _sql_constraints = [
