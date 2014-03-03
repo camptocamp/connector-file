@@ -26,7 +26,6 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 from ..backend import file_import
 from .policy import LoadPolicy
-from ..exceptions import MoveLoadFailedJobError
 
 
 @file_import
@@ -79,7 +78,9 @@ class MoveLoadPolicy(LoadPolicy):
                 'load_state': 'done',
             }, context=s.context)
         else:
-            raise MoveLoadFailedJobError(
-                u'Error during load() of the account.move',
-                load_result['messages']
-            )
+            chunk_b.write({
+                'load_state': 'failed',
+                'exc_info': u'Error during load() of the account.move'.format(
+                    load_result['messages']
+                )
+            }, context=s.context)

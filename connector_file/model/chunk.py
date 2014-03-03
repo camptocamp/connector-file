@@ -93,6 +93,7 @@ class file_chunk_binding(orm.Model):
             string='State of the Load process',
             readonly=True,
             required=True),
+        'exc_info': fields.text('Exception Info', readonly=True),
     }
 
     _defaults = {

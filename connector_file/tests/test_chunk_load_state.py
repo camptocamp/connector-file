@@ -37,7 +37,9 @@ class TestChunkLoadState(common.TransactionCase):
 
         self.parsed_header = '["ref", "date", "period_id", "journal_id", "line_id/account_id", "line_id/partner_id", "line_id/name", "line_id/analytic_account_id", "line_id/debit", "line_id/credit", "line_id/tax_code_id"]'  # noqa
 
-        self.parsed_chunk = '[["1728274", "2014-02-02", "02\\\\/2014", "Sales Journal - (test)", "X11001", "Bank Wealthy and sons", "Camptocamp", "", "37.8", "", ""], ["", "", "", "", "X1111", "Bank Wealthy and sons", "Camptocamp", "AA009", "", "31.5", "taxcode1"], ["", "", "", "", "X2001", "Bank Wealthy and sons", "Camptocamp", "AA001", "", "3.83", "taxcode1"], ["", "", "", "", "X2110", "Bank Wealthy and sons", "Camptocamp", "AA001", "3.83", "", "taxcode1"], ["", "", "", "", "X1000", "Bank Wealthy and sons", "Camptocamp", "", "", "6.3", "taxcode2"], ["", "", "", "", "X1000", "Bank Wealthy and sons", "Camptocamp", "", "", "-0", "taxcode2"]]'  # noqa
+        self.parsed_good_chunk = '[["1728274", "2014-02-02", "02\\\\/2014", "Sales Journal - (test)", "X11001", "Bank Wealthy and sons", "Camptocamp", "", "37.8", "", ""], ["", "", "", "", "X1111", "Bank Wealthy and sons", "Camptocamp", "AA009", "", "31.5", "taxcode1"], ["", "", "", "", "X2001", "Bank Wealthy and sons", "Camptocamp", "AA001", "", "3.83", "taxcode1"], ["", "", "", "", "X2110", "Bank Wealthy and sons", "Camptocamp", "AA001", "3.83", "", "taxcode1"], ["", "", "", "", "X1000", "Bank Wealthy and sons", "Camptocamp", "", "", "6.3", "taxcode2"], ["", "", "", "", "X1000", "Bank Wealthy and sons", "Camptocamp", "", "", "-0", "taxcode2"]]'  # noqa
+
+        self.parsed_chunk_missing_journal = '[["1728274", "2014-02-02", "02\\\\/2014", "Sales Journal - (test)", "X11001", "Bank Wealthy and sons", "Camptocamp", "", "37.8", "", ""], ["", "", "", "", "X1111", "Bank Wealthy and sons", "Camptocamp", "AA009", "", "31.5", "taxcode1"], ["", "", "", "", "X2001", "Bank Wealthy and sons", "Camptocamp", "AA001", "", "3.83", "taxcode1"], ["", "", "", "", "X2110", "Bank Wealthy and sons", "Camptocamp", "AA001", "3.83", "", "taxcode1"], ["", "", "", "", "X1000", "Bank Wealthy and sons", "Camptocamp", "", "", "-6.3", "taxcode2"], ["", "", "", "", "X1000", "Bank Wealthy and sons", "Camptocamp", "", "", "-0", "taxcode2"]]'  # noqa
 
         with open(expand_path('two_chunks.csv')) as input_file:
             file_content = input_file.read()
@@ -55,7 +57,7 @@ class TestChunkLoadState(common.TransactionCase):
         """A new chunk should have state pending."""
         chunk_id = self.session.create(
             'file.chunk.binding', {
-                'prepared_data': self.parsed_chunk,
+                'prepared_data': self.parsed_good_chunk,
                 'backend_id': self.backend_id,
                 'attachment_binding_id': self.document_id,
             })
@@ -70,7 +72,7 @@ class TestChunkLoadState(common.TransactionCase):
         """Once loaded, a chunk should have state done."""
         chunk_id = self.session.create(
             'file.chunk.binding', {
-                'prepared_data': self.parsed_chunk,
+                'prepared_data': self.parsed_good_chunk,
                 'backend_id': self.backend_id,
                 'attachment_binding_id': self.document_id,
             })
@@ -82,3 +84,25 @@ class TestChunkLoadState(common.TransactionCase):
         self.policy.load_one_chunk(chunk_id)
 
         self.assertEquals(chunk.load_state, 'done')
+
+    def test_broken_chunk_state_failed(self):
+        """If load fails, we should have load_state failed.
+
+        Implicitly, the exception should pass (the job will be done).
+
+        """
+
+        chunk_id = self.session.create(
+            'file.chunk.binding', {
+                'prepared_data': self.parsed_chunk_missing_journal,
+                'backend_id': self.backend_id,
+                'attachment_binding_id': self.document_id,
+            })
+
+        chunk = self.session.browse(
+            'file.chunk.binding',
+            chunk_id)
+
+        self.policy.load_one_chunk(chunk_id)
+
+        self.assertEquals(chunk.load_state, 'failed')
