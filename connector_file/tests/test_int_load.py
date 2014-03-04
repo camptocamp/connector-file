@@ -111,3 +111,18 @@ class TestIntLoad(common.TransactionCase):
 
         self.assertIn(u'Error during load', chunk.exc_info)
         self.assertIn(u'violates check constraint', chunk.exc_info)
+
+    def test_one_chunk_creates_one_move(self):
+        chunk_id = self.session.create(
+            'file.chunk.binding', {
+                'prepared_data': self.parsed_good_chunk,
+                'backend_id': self.backend_id,
+                'attachment_binding_id': self.document_id,
+            })
+
+        self.policy.load_one_chunk(chunk_id)
+
+        move_ids = self.session.search('account.move', [
+            ('ref', '=', '1728274')
+        ])
+        self.assertEquals(len(move_ids), 1)
