@@ -214,6 +214,6 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             ftp_password,
         ) as host:
             host.rename(
-                os.path.join(folder_from, file_name),
-                os.path.join(folder_to, file_name),
+                os.path.join(folder_from, os.path.basename(file_name)),
+                os.path.join(folder_to, os.path.basename(file_name)),
             )
