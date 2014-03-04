@@ -126,3 +126,19 @@ class TestIntLoad(common.TransactionCase):
             ('ref', '=', '1728274')
         ])
         self.assertEquals(len(move_ids), 1)
+
+    def test_load_one_chunk_twice_creates_one_move(self):
+        chunk_id = self.session.create(
+            'file.chunk.binding', {
+                'prepared_data': self.parsed_good_chunk,
+                'backend_id': self.backend_id,
+                'attachment_binding_id': self.document_id,
+            })
+
+        self.policy.load_one_chunk(chunk_id)
+        self.policy.load_one_chunk(chunk_id)
+
+        move_ids = self.session.search('account.move', [
+            ('ref', '=', '1728274')
+        ])
+        self.assertEquals(len(move_ids), 1)

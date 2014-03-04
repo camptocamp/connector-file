@@ -54,6 +54,10 @@ class MoveLoadPolicy(LoadPolicy):
         chunk_b_obj = s.pool[self._model_name]
         chunk_b = chunk_b_obj.browse(s.cr, s.uid, chunk_b_id,
                                      context=s.context)
+
+        if chunk_b.load_state != 'pending':
+            return
+
         prepared_header = json.loads(chunk_b.prepared_header)
         prepared_data = json.loads(chunk_b.prepared_data)
         load_result = move_obj.load(
