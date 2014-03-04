@@ -27,6 +27,7 @@ from . import test_csv_parse_policy
 from . import test_chunk
 from . import test_document_parse_state
 from . import test_chunk_load_state
+from . import test_int_csv_parse
 
 fast_suite = [
 ]
@@ -37,4 +38,5 @@ checks = [
     test_chunk,
     test_document_parse_state,
     test_chunk_load_state,
+    test_int_csv_parse,
 ]
