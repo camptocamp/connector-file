@@ -88,6 +88,20 @@ class file_chunk_binding(orm.Model):
             type='char',
             string='Prepared Header (JSON)',
         ),
+        'related_line_start': fields.related(
+            'openerp_id',
+            'line_start',
+            type='integer',
+            string='Related Line Start (use for Unique Check)',
+            store=True,
+        ),
+        'related_line_stop': fields.related(
+            'openerp_id',
+            'line_stop',
+            type='integer',
+            string='Related Line Stop (use for Unique Check)',
+            store=True,
+        ),
         'load_state': fields.selection(
             [('pending', 'Pending'), ('failed', 'Failed'), ('done', 'Done')],
             string='State of the Load process',
@@ -101,6 +115,12 @@ class file_chunk_binding(orm.Model):
     }
 
     _sql_constraints = [
+        (
+            'document_binding_uniq',
+            'unique(backend_id, attachment_binding_id, '
+            'related_line_start, related_line_stop)',
+            'A file with the same hash already exist for this backend.'
+        ),
     ]
 
     @staticmethod

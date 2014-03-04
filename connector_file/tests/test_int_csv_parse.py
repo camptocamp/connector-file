@@ -60,3 +60,14 @@ class TestIntCSVParse(common.TransactionCase):
             ('attachment_binding_id', '=', self.document_id)
         ])
         self.assertEquals(len(chunk_ids), 2)
+
+    def test_parse_document_again_do_nothing(self):
+        """Parsing a file twice should not create new chunks."""
+
+        self.policy.parse_one(self.document_id)
+        self.policy.parse_one(self.document_id)
+
+        chunk_ids = self.session.search('file.chunk.binding', [
+            ('attachment_binding_id', '=', self.document_id)
+        ])
+        self.assertEquals(len(chunk_ids), 2)
