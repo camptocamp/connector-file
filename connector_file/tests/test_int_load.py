@@ -9,10 +9,12 @@ from .common import expand_path
 from ..unit.move_load_policy import MoveLoadPolicy
 
 
-class TestChunkLoadState(common.TransactionCase):
+class TestIntLoad(common.TransactionCase):
+
+    """Integrated tests of the Load chunk. We hit the DB here."""
 
     def setUp(self):
-        super(TestChunkLoadState, self).setUp()
+        super(TestIntLoad, self).setUp()
         self.backend_record = Mock()
         self.session = ConnectorSession(self.cr, self.uid)
         self.model_name = 'ir.attachment.binding'
