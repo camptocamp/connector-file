@@ -73,7 +73,11 @@ class FileSynchronizer(BaseFileSynchronizer):
 
             # creates an attachment.binding.id with given content
             # returns attachment_binding_id
-            return policy.create_one(data_file_name, hash_string, content)
+            return policy.create_one(
+                data_file_name,
+                hash_file_name,
+                hash_string,
+                content)
         except InvalidFileError as e:
             self.file_getter_policy_instance.manage_exception(
                 e,

@@ -25,6 +25,7 @@
                                 <field name="ftp_password" password="True"/>
                                 <field name="ftp_input_folder"/>
                                 <field name="ftp_failed_folder"/>
+                                <field name="ftp_archive_folder"/>
                                 <field name="file_name_regexp"/>
                             </group>
                         </group>

@@ -68,7 +68,6 @@ class FTPFileGetterPolicy(FileGetterPolicy):
 
     def ask_files(self):
         """Return a generator of tuples (data_file_name, hash_file_name)."""
-
         return self._ask_files(
             self.backend_record.ftp_host,
             self.backend_record.ftp_user,
@@ -128,10 +127,16 @@ class FTPFileGetterPolicy(FileGetterPolicy):
                 self.backend_record.ftp_input_folder,
                 self.backend_record.ftp_failed_folder,
             )
+            self.move_one(
+                hash_file_name,
+                self.backend_record.ftp_input_folder,
+                self.backend_record.ftp_failed_folder,
+            )
         else:
             raise
 
-    def create_one(self, file_name, external_hash, content):
+    def create_one(self, data_file_name, hash_file_name, external_hash,
+                   content):
         """Create one file in OpenERP.
 
         Return id of the created object.
@@ -152,9 +157,9 @@ class FTPFileGetterPolicy(FileGetterPolicy):
                 '''.format(internal_hash, external_hash)
             )
         try:
-            return self.session.create(self.model._name, {
-                'name': file_name,
-                'datas_fname': os.path.basename(file_name),
+            created_id = self.session.create(self.model._name, {
+                'name': data_file_name,
+                'datas_fname': os.path.basename(data_file_name),
                 'external_hash': external_hash,
                 'internal_hash': internal_hash,
                 'datas': base64.b64encode(content),
@@ -175,6 +180,20 @@ class FTPFileGetterPolicy(FileGetterPolicy):
                 raise
         finally:
             self.session.cr._default_log_exceptions = initial_log_exceptions
+
+        if self.backend_record.ftp_archive_folder:
+            self.move_one(
+                data_file_name,
+                self.backend_record.ftp_input_folder,
+                self.backend_record.ftp_archive_folder,
+            )
+            self.move_one(
+                hash_file_name,
+                self.backend_record.ftp_input_folder,
+                self.backend_record.ftp_archive_folder,
+            )
+
+        return created_id
 
     def move_one(self, file_name, folder_from, folder_to):
         """Move a file. Return whatever comes from the library."""
