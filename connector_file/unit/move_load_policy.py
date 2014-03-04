@@ -80,7 +80,9 @@ class MoveLoadPolicy(LoadPolicy):
         else:
             chunk_b.write({
                 'load_state': 'failed',
-                'exc_info': u'Error during load() of the account.move'.format(
-                    load_result['messages']
+                'exc_info': (
+                    u'Error during load() of the account.move.\n{0}'.format(
+                        load_result['messages']
+                    )
                 )
             }, context=s.context)

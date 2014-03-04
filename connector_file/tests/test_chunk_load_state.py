@@ -106,3 +106,6 @@ class TestChunkLoadState(common.TransactionCase):
         self.policy.load_one_chunk(chunk_id)
 
         self.assertEquals(chunk.load_state, 'failed')
+
+        self.assertIn(u'Error during load', chunk.exc_info)
+        self.assertIn(u'violates check constraint', chunk.exc_info)
