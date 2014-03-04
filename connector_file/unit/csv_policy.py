@@ -22,7 +22,6 @@
 import csv
 import simplejson
 from datetime import datetime
-import psycopg2
 
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
@@ -49,6 +48,10 @@ class CSVParsePolicy(ParsePolicy):
         s = self.session
         chunk_b_obj = s.pool['file.chunk.binding']
         attachment_b = s.browse(self.model._name, attachment_b_id)
+
+        if attachment_b.parse_state != 'pending':
+            return
+
         backend_id = attachment_b.backend_id.id
 
         file_like = self.model.get_file_like(
@@ -79,23 +82,7 @@ class CSVParsePolicy(ParsePolicy):
                 'backend_id': backend_id,
             })
 
-            backup_log_exceptions = self.session.cr._default_log_exceptions
-            self.session.cr._default_log_exceptions = False
-            self.session.cr.execute('SAVEPOINT create_chunk')
-            try:
-                chunk_b_obj.create(s.cr, s.uid, chunk_data, context=s.context)
-            except psycopg2.IntegrityError as e:
-                if 'violates unique constraint' in str(e):
-                    # we want our job to be idempotent: if the chunk cannot be
-                    # created because it already exists, we do nothing.
-                    self.session.cr.execute(
-                        'ROLLBACK TO SAVEPOINT create_chunk'
-                    )
-                else:
-                    raise
-            finally:
-                self.session.cr._default_log_exceptions = backup_log_exceptions
-                self.session.cr.execute('RELEASE SAVEPOINT create_chunk')
+            chunk_b_obj.create(s.cr, s.uid, chunk_data, context=s.context)
 
     @staticmethod
     def _split_data_in_chunks(data, delimiter=';', quotechar='"'):
