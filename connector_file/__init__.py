@@ -19,7 +19,7 @@
 #
 ##############################################################################
 """File Import with the OpenERP Connector."""
-import connector  # noqa
-import backend  # noqa
-import model  # noqa
-import unit  # noqa
+from . import connector  # noqa
+from . import backend  # noqa
+from . import model  # noqa
+from . import unit  # noqa

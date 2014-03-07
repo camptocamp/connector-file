@@ -19,6 +19,6 @@
 #
 ##############################################################################
 """OpenERP models."""
-import backend_model  # noqa
-import chunk  # noqa
-import document  # noqa
+from . import backend_model  # noqa
+from . import chunk  # noqa
+from . import document  # noqa
