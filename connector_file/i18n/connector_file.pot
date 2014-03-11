@@ -1,0 +1,502 @@
+# Translation of OpenERP Server.
+# This file contains the translation of the following modules:
+#	* connector_file
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenERP Server 7.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-03-11 10:48+0000\n"
+"PO-Revision-Date: 2014-03-11 10:48+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: connector_file
+#: field:file.chunk.binding,related_line_stop:0
+msgid "Related Line Stop (use for Unique Check)"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+msgid "Load Chunk immediately"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Group By..."
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+msgid "Prepared data, JSON"
+msgstr ""
+
+#. module: connector_file
+#: model:ir.actions.act_window,name:connector_file.action_file_import_backend
+msgid "File Import Backends"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,company_id:0
+#: view:ir.attachment.binding:0
+msgid "Company"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "My Document(s)"
+msgstr ""
+
+#. module: connector_file
+#: view:file_import.backend:0
+msgid "Get all files in background"
+msgstr ""
+
+#. module: connector_file
+#: code:_description:0
+#: model:ir.model,name:connector_file.model_connector_file_installed
+#, python-format
+msgid "connector_file.installed"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,ftp_user:0
+msgid "FTP User"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Filter on my documents"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+msgid "Extract Raw Data for this chunk from original file"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,ftp_failed_folder:0
+msgid "FTP Output folder"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk.binding,exc_info:0
+msgid "Exception Info"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,ftp_port:0
+msgid "FTP Port (not implemented)"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "URL"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+msgid "Lines of the original file"
+msgstr ""
+
+#. module: connector_file
+#: view:file_import.backend:0
+msgid "Parse all files in background"
+msgstr ""
+
+#. module: connector_file
+#: view:file_import.backend:0
+msgid "Advanced Configuration"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk,sync_date:0
+#: field:file.chunk.binding,sync_date:0
+#: field:ir.attachment.binding,sync_date:0
+msgid "Last synchronization date"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+#: view:ir.attachment.binding:0
+msgid "Binding"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk.binding,backend_id:0
+#: field:ir.attachment.binding,backend_id:0
+msgid "File Exchange Backend"
+msgstr ""
+
+#. module: connector_file
+#: code:_description:0
+#: model:ir.model,name:connector_file.model_ir_attachment_binding
+#, python-format
+msgid "File Attachment Binding"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment:0
+msgid "Bindings"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk.binding,move_id:0
+msgid "Journal Entry"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,ftp_host:0
+msgid "FTP Host"
+msgstr ""
+
+#. module: connector_file
+#: field:ir.attachment.binding,parse_state:0
+msgid "State of the Parse process"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+#: selection:file.chunk.binding,load_state:0
+#: view:ir.attachment.binding:0
+#: selection:ir.attachment.binding,parse_state:0
+msgid "Failed"
+msgstr ""
+
+#. module: connector_file
+#: model:ir.ui.menu,name:connector_file.menu_connector_file_backend
+msgid "Backends"
+msgstr ""
+
+#. module: connector_file
+#: code:_description:0
+#: model:ir.model,name:connector_file.model_file_chunk_binding
+#, python-format
+msgid "File Chunk Binding"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Type"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk,raw_data:0
+msgid "Raw data, press button to update"
+msgstr ""
+
+#. module: connector_file
+#: view:file_import.backend:0
+msgid "By clicking on the buttons,\n"
+"                                    you will initiate the synchronizations\n"
+"                                    with CSV Files.\n"
+"                                    Note that the actual work\n"
+"                                    will not be done directly. Instaed, 'Jobs'\n"
+"                                    will be created and\n"
+"                                    executed as soon as possible. Normally,\n"
+"                                    these buttons are not pressed directly,\n"
+"                                    but a cron job should be set up for\n"
+"                                    performing each of those tasks regularly.\n"
+"                                    Note that creating the jobs is fast, but\n"
+"                                    can still take a few minutes if there are\n"
+"                                    many thousands of lines to load. This is\n"
+"                                    normal, and should not be an issue when\n"
+"                                    that is performed by cron jobs."
+msgstr ""
+
+#. module: connector_file
+#: model:ir.actions.act_window,name:connector_file.action_attachment_binding
+#: view:ir.attachment.binding:0
+#: model:ir.ui.menu,name:connector_file.menu_attachment_binding
+msgid "Attachment Bindings"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,ftp_password:0
+msgid "FTP Password"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment:0
+#: view:ir.attachment.binding:0
+msgid "Parse now"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk,line_start:0
+msgid "Line Start"
+msgstr ""
+
+#. module: connector_file
+#: field:ir.attachment.binding,internal_hash:0
+msgid "Internal Hash"
+msgstr ""
+
+#. module: connector_file
+#: field:ir.attachment.binding,openerp_id:0
+msgid "OpenERP Attachment"
+msgstr ""
+
+#. module: connector_file
+#: view:file_import.backend:0
+msgid "Load all chunks in background"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,ftp_input_folder:0
+msgid "FTP Input folder"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "on"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk,line_stop:0
+msgid "Line Stop"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+msgid "Document Binding"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Month"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk.binding,prepared_header:0
+msgid "Prepared Header (JSON)"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Owner"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Binary"
+msgstr ""
+
+#. module: connector_file
+#: field:ir.attachment.binding,external_hash:0
+msgid "External Hash"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk.binding,openerp_id:0
+msgid "OpenERP Chunk"
+msgstr ""
+
+#. module: connector_file
+#: code:_description:0
+#: model:ir.model,name:connector_file.model_file_chunk
+#, python-format
+msgid "File Chunk"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,use_sftp:0
+msgid "Use SFTP (not implemented)"
+msgstr ""
+
+#. module: connector_file
+#: help:file.chunk,line_start:0
+#: help:file.chunk,line_stop:0
+msgid "1-based"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+#: selection:file.chunk.binding,load_state:0
+#: view:ir.attachment.binding:0
+#: selection:ir.attachment.binding,parse_state:0
+msgid "Pending"
+msgstr ""
+
+#. module: connector_file
+#: field:ir.attachment,binding_ids:0
+msgid "unknown"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,user_id:0
+msgid "User"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+msgid "Exception Information"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Hashes"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment:0
+#: view:ir.attachment.binding:0
+msgid "Data"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,file_name_regexp:0
+msgid "File Name regexp"
+msgstr ""
+
+#. module: connector_file
+#: model:ir.ui.menu,name:connector_file.menu_connector_file_root
+msgid "File Import"
+msgstr ""
+
+#. module: connector_file
+#: field:ir.attachment.binding,prepared_header:0
+msgid "Prepared Header, JSON"
+msgstr ""
+
+#. module: connector_file
+#: view:file_import.backend:0
+msgid "File Import Configuration"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Attached To"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "History"
+msgstr ""
+
+#. module: connector_file
+#: view:file_import.backend:0
+msgid "Imports"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Header"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,version:0
+msgid "Version"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+#: selection:file.chunk.binding,load_state:0
+#: view:ir.attachment.binding:0
+#: selection:ir.attachment.binding,parse_state:0
+msgid "Done"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Chunks"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Attachment Binding"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Creation Month"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk.binding,load_state:0
+msgid "State of the Load process"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,ftp_archive_folder:0
+msgid "FTP Archive folder"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk.binding,attachment_binding_id:0
+msgid "File Binding"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+#: model:ir.actions.act_window,name:connector_file.action_chunk_binding
+#: field:ir.attachment.binding,chunk_binding_ids:0
+#: model:ir.ui.menu,name:connector_file.menu_chunk_binding
+msgid "Chunk Bindings"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk.binding,related_line_start:0
+msgid "Related Line Start (use for Unique Check)"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Description"
+msgstr ""
+
+#. module: connector_file
+#: code:_description:0
+#: model:ir.model,name:connector_file.model_ir_attachment
+#, python-format
+msgid "ir.attachment"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+msgid "Get raw data"
+msgstr ""
+
+#. module: connector_file
+#: field:file.chunk,prepared_data:0
+msgid "Prepared Data, JSON"
+msgstr ""
+
+#. module: connector_file
+#: code:_description:0
+#: view:file_import.backend:0
+#: model:ir.model,name:connector_file.model_file_import_backend
+#, python-format
+msgid "File Import Backend"
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,name:0
+msgid "Name"
+msgstr ""
+
+#. module: connector_file
+#: sql_constraint:file.chunk.binding:0
+#: sql_constraint:ir.attachment.binding:0
+msgid "A file with the same hash already exist for this backend."
+msgstr ""
+
+#. module: connector_file
+#: field:file_import.backend,model_id:0
+msgid "Model"
+msgstr ""
+
+#. module: connector_file
+#: view:ir.attachment.binding:0
+msgid "Creation"
+msgstr ""
+
+#. module: connector_file
+#: view:file.chunk.binding:0
+msgid "Prepared header, JSON"
+msgstr ""
+
