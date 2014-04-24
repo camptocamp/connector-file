@@ -482,7 +482,7 @@ msgstr ""
 #. module: connector_file
 #: sql_constraint:file.chunk.binding:0
 #: sql_constraint:ir.attachment.binding:0
-msgid "A file with the same hash already exist for this backend."
+msgid "A file with the same hash already exists for this backend."
 msgstr ""
 
 #. module: connector_file

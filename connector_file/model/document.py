@@ -92,7 +92,7 @@ class attachment_binding(orm.Model):
         (
             'document_binding_uniq',
             'unique(backend_id, external_hash)',
-            'A file with the same hash already exist for this backend.'
+            'A file with the same hash already exists for this backend.'
         ),
     ]
 
