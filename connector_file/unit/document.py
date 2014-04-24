@@ -148,7 +148,7 @@ class FileParser(BaseParser):
     def parse_policy_instance(self):
         """Return an instance of ``CSVParsePolicy``.
 
-        The instantiation is delayed because some synchronisations do
+        The instantiation is delayed because some synchronizations do
         not need such a unit and the unit may not exist.
 
         """

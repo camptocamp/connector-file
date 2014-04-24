@@ -40,7 +40,7 @@ class BaseFileSynchronizer(ImportSynchronizer):
     def file_getter_policy_instance(self):
         """ Return an instance of ``FTPFileGetterPolicy``.
 
-        The instantiation is delayed because some synchronisations do
+        The instantiation is delayed because some synchronizations do
         not need such a unit and the unit may not exist.
 
         """
@@ -54,7 +54,7 @@ class BaseFileSynchronizer(ImportSynchronizer):
     def file_getter_error_policy(self):
         """ Return an instance of ``FileGetterErrorPolicy``.
 
-        The instantiation is delayed because some synchronisations do
+        The instantiation is delayed because some synchronizations do
         not need such a unit and the unit may not exist.
 
         :rtype: :py:class:`connector_file.unit.policy.FileGetterErrorPolicy`
