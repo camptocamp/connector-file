@@ -83,7 +83,8 @@ class TestFTPGetPolicyWithOE(common.TransactionCase):
                 'ftp_password': 'ftppass',
                 'ftp_input_folder': 'to_openerp',
                 'ftp_failed_folder': 'from_openerp',
-            })
+            },
+            self.session.context)
         self.env = Environment(
             self.backend_record,
             self.session,
