@@ -85,7 +85,7 @@ class ChunkLoader(BaseChunkLoader):
         """ Return an instance of ``CSVParsePolicy``.
 
         The instantiation is delayed because some synchronisations do
-        not need such an unit and the unit may not exist.
+        not need such a unit and the unit may not exist.
 
         """
         if self._load_policy_instance is None:
