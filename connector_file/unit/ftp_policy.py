@@ -58,8 +58,9 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             file_list = host.listdir(ftp_input_folder)
             for file_name in file_list:
                 if re.search(file_name_regexp, file_name):
-                    if file_name[-4:] == '.csv':
-                        hash_file_name = file_name[:-4] + '.md5'
+                    basename, extension = os.path.splitext(file_name)
+                    if extension == '.csv':
+                        hash_file_name = basename + '.md5'
                         if hash_file_name in file_list:
                             yield (
                                 os.path.join(ftp_input_folder, file_name),
