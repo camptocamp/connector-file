@@ -119,7 +119,7 @@ class file_chunk_binding(orm.Model):
             'document_binding_uniq',
             'unique(backend_id, attachment_binding_id, '
             'related_line_start, related_line_stop)',
-            'A file with the same hash already exist for this backend.'
+            'A file with the same hash already exists for this backend.'
         ),
     ]
 
