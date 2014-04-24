@@ -143,7 +143,7 @@ class file_chunk_binding(orm.Model):
     def get_raw_button(self, cr, uid, ids, context=None):
         """Extract the original raw data for this chunk from the file.
 
-        This will use the line_start e line_stop to get the raw data
+        This will use the line_start and line_stop to get the raw data
         for this chunk from the original file, without header.
 
         Return True
