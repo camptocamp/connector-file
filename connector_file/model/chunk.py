@@ -40,7 +40,7 @@ class file_chunk(orm.Model):
 
     _description = 'File Chunk'
 
-    name_get = lambda self, cr, uid, ids, c: 'What shall we use as name_get?'
+    _rec_name = 'sync_date'
 
     _columns = {
         'line_start': fields.integer('Line Start', help="1-based"),
