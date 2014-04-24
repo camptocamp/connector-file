@@ -52,7 +52,7 @@ class CSVParsePolicy(ParsePolicy):
         if attachment_b.parse_state != 'pending':
             return
 
-        backend_id = attachment_b.backend_id.id
+        backend = attachment_b.backend_id
 
         file_like = self.model.get_file_like(
             s.cr,
@@ -61,7 +61,9 @@ class CSVParsePolicy(ParsePolicy):
             context=s.context
         )
         self.model.write(s.cr, s.uid, attachment_b_id, {
-            'prepared_header': self._parse_header_data(file_like),
+            'prepared_header': self._parse_header_data(file_like,
+                                                       backend.delimiter,
+                                                       backend.quotechar),
             'sync_date': datetime.now().strftime(
                 DEFAULT_SERVER_DATETIME_FORMAT
             ),
@@ -75,24 +77,26 @@ class CSVParsePolicy(ParsePolicy):
             context=s.context
         )
 
-        for chunk_data in self._split_data_in_chunks(file_like_2):
+        for chunk_data in self._split_data_in_chunks(file_like_2,
+                                                     backend.delimiter,
+                                                     backend.quotechar):
 
             chunk_data.update({
                 'attachment_binding_id': attachment_b_id,
-                'backend_id': backend_id,
+                'backend_id': backend.id,
             })
 
             chunk_b_obj.create(s.cr, s.uid, chunk_data, context=s.context)
 
     @staticmethod
-    def _split_data_in_chunks(data, delimiter=';', quotechar='"'):
+    def _split_data_in_chunks(data, delimiter, quotechar):
         """Take a file-like object, and return chunk data."""
         with data as file_like:
             file_like.seek(0)
             reader = csv.reader(
                 file_like,
-                delimiter=delimiter,
-                quotechar=quotechar
+                delimiter=str(delimiter),
+                quotechar=str(quotechar),
             )
 
             # skip the header
@@ -130,14 +134,15 @@ class CSVParsePolicy(ParsePolicy):
                 }
 
     @staticmethod
-    def _parse_header_data(data, delimiter=';', quotechar='"'):
+    def _parse_header_data(data, delimiter, quotechar):
         """Take a file-like object, and return JSON-parsed header."""
         with data as file_like:
             file_like.seek(0)
+
             reader = csv.reader(
                 file_like,
-                delimiter=delimiter,
-                quotechar=quotechar
+                delimiter=str(delimiter),
+                quotechar=str(quotechar),
             )
 
             try:

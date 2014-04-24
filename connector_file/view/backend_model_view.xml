@@ -27,6 +27,8 @@
                                 <field name="ftp_failed_folder"/>
                                 <field name="ftp_archive_folder"/>
                                 <field name="file_name_regexp"/>
+                                <field name="delimiter"/>
+                                <field name="quotechar"/>
                             </group>
                         </group>
                         <notebook>

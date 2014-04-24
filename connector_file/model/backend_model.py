@@ -60,10 +60,14 @@ class file_import_backend(orm.Model):
         'ftp_archive_folder': fields.char('FTP Archive folder'),
         'use_sftp': fields.boolean('Use SFTP (not implemented)'),
         'model_id': fields.many2one('ir.model', 'Model'),
+        'delimiter': fields.char('CSV delimiter'),
+        'quotechar': fields.char('CSV quotechar'),
     }
 
     _defaults = {
         'version': '1',
+        'delimiter': ';',
+        'quotechar': '"',
     }
 
     def get_all_async(self, cr, uid, ids, context=None):
