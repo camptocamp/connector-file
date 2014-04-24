@@ -84,7 +84,7 @@ class ChunkLoader(BaseChunkLoader):
     def load_policy_instance(self):
         """ Return an instance of ``CSVParsePolicy``.
 
-        The instanciation is delayed because some synchronisations do
+        The instantiation is delayed because some synchronisations do
         not need such an unit and the unit may not exist.
 
         """
