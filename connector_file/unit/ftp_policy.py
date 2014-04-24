@@ -117,7 +117,7 @@ class FTPFileGetterPolicy(FileGetterPolicy):
     @staticmethod
     def _compute_internal_hash(content):
         """Return a hex md5 hash, like md5sum from GNU coreutils does."""
-        return hashlib.md5(content).digest().encode('hex')
+        return hashlib.md5(content).hexdigest()
 
     def manage_exception(self, e, data_file_name, hash_file_name):
         """In case of trouble, try to move the file away."""
