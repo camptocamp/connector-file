@@ -20,10 +20,6 @@
 ##############################################################################
 """Base classes for connector synchronizers."""
 
-import logging
-
-_logger = logging.getLogger(__name__)
-
 from openerp.addons.connector.unit.synchronizer import Synchronizer
 from openerp.addons.connector.unit.synchronizer import ImportSynchronizer
 

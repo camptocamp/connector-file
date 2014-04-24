@@ -20,11 +20,7 @@
 ##############################################################################
 """Backend adapters."""
 
-import logging
-
 from openerp.addons.connector.connector import ConnectorUnit
-
-_logger = logging.getLogger(__name__)
 
 
 class Policy(ConnectorUnit):

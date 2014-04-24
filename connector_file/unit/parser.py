@@ -20,10 +20,6 @@
 ##############################################################################
 """Connector Synchronizers."""
 
-import logging
-
-_logger = logging.getLogger(__name__)
-
 from openerp.addons.connector.unit.synchronizer import ImportSynchronizer
 
 
