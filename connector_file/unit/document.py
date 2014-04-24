@@ -187,6 +187,6 @@ class DirectFileParser(FileParser):
 @file_import
 class AsyncFileParser(FileParser):
 
-    """Parser, synchronous version."""
+    """Parser, asynchronous version."""
 
     pass
