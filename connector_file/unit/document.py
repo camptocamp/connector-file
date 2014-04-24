@@ -129,14 +129,14 @@ class FileParser(BaseParser):
         """Parse one file and create the appropriate chunks."""
         policy = self.parse_policy_instance
         _logger.info(
-            u'Parsing attachment binding {0} now'.format(attachment_binding_id)
+            u'Parsing attachment binding %s now', attachment_binding_id
         )
         policy.parse_one(attachment_binding_id)
 
     def parse_all(self):
         """Parse all files into chunks."""
         ids = self.get_files_to_parse()
-        _logger.info(u'Jobs to parse {0} files put in queue'.format(len(ids)))
+        _logger.info(u'Jobs to parse %s files put in queue', len(ids))
         for attachment_binding_id in ids:
             parse_one_file.delay(
                 self.session,

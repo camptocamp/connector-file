@@ -61,22 +61,18 @@ class ChunkLoader(BaseChunkLoader):
     def load_one_chunk(self, chunk_binding_id):
         """Load a chunk in OpenERP. Normally called by a job."""
         policy = self.load_policy_instance
-        _logger.info(
-            u'Loading chunk binding {0} now'.format(chunk_binding_id)
-        )
+        _logger.info(u'Loading chunk binding %s now', chunk_binding_id)
         policy.load_one_chunk(chunk_binding_id)
 
     def load_all(self):
         """Create jobs for loading all chunks."""
         ids = self.get_chunks_to_load()
-        _logger.info(
-            u'I will now create {0} jobs for loading.'.format(len(ids))
-        )
+        _logger.info(u'I will now create %s jobs for loading.', len(ids))
         # I take that out of the loop to make it a bit faster.
         backend_record_id = self.backend_record.id
         for count, chunk_binding_id in enumerate(ids):
             if count % LOG_EVERY == 0:
-                _logger.info('{0} jobs created'.format(count))
+                _logger.info('%s jobs created', count)
             load_one_chunk.delay(
                 self.session,
                 self._model_name,
