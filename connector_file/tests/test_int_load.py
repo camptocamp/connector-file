@@ -85,7 +85,7 @@ class TestIntLoad(common.TransactionCase):
 
         self.policy.load_one_chunk(chunk_id)
 
-        self.assertEquals(chunk.load_state, 'done')
+        self.assertEquals(chunk.load_state, 'done', msg=chunk.exc_info)
 
     def test_broken_chunk_state_failed(self):
         """If load fails, we should have load_state failed.
