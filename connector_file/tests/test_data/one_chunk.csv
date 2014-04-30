@@ -1,5 +1,5 @@
 ref;date;period_id;journal_id;"line_id/account_id";"line_id/partner_id";"line_id/name";"line_id/analytic_account_id";"line_id/debit";"line_id/credit";line_id/tax_code_id
-1728274;2014-02-02;"02\/2014";"Sales Journal - (test)";X11001;"Bank Wealthy and sons";"Camptocamp";;37.8;;
+1728274;2014-02-02;"02/2014";"Sales Journal - (test)";X11001;"Bank Wealthy and sons";"Camptocamp";;37.8;;
 ;;;;X1111;"Bank Wealthy and sons";"Camptocamp";AA009;;31.5;taxcode1
 ;;;;X2001;"Bank Wealthy and sons";"Camptocamp";AA001;;3.83;taxcode1
 ;;;;X2110;"Bank Wealthy and sons";"Camptocamp";AA001;3.83;;taxcode1

@@ -28,7 +28,7 @@ class TestGetRawData(unittest2.TestCase):
         self.assertEquals(
             actual_raw,
             """\
-1728277;2014-02-02;"02\/2014";"Sales Journal - (test)";X11001;\
+1728277;2014-02-02;"02/2014";"Sales Journal - (test)";X11001;\
 "Bank Wealthy and sons";"OpenERP SA";;56.4;;
 ;;;;X1111;"Bank Wealthy and sons";"OpenERP SA";AA009;;43.17;taxcode1
 ;;;;X2001;"Bank Wealthy and sons";"OpenERP SA";AA001;;3.83;taxcode1
