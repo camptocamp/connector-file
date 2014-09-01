@@ -1,5 +1,7 @@
-Connector File Import
-=====================
+[![Build Status](https://travis-ci.org/camptocamp/connector-file.svg?branch=master)](https://travis-ci.org/camptocamp/connector-file)
+[![Coverage Status](https://coveralls.io/repos/camptocamp/connector-file/badge.png?branch=master)](https://coveralls.io/r/camptocamp/connector-file?branch=master)
+
+# Connector File Import
 
 Asynchronous, fault-tolerant import of external files using the OpenERP
 Connector.
