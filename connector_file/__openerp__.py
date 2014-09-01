@@ -21,7 +21,7 @@
 
 {
     'name': 'Connector for importing files',
-    'version': '0.1',
+    'version': '1.0',
     'category': 'Connector',
     'author': 'Camptocamp',
     'website': 'camptocamp.com',
