@@ -13,6 +13,7 @@ virtualenv:
 install:
   - git clone https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
+  - pip install -r requirements.txt
   - travis_install_nightly
   - git clone git://github.com/OCA/connector.git -b 7.0 --depth 1 $HOME/connector
 
