@@ -32,13 +32,15 @@ jobs, Synchronizers and Units:
 * The loading of each chunk in a Journal Entry. Each job handles a Chunk.
 
 # Limitations and future
+
 * Although the three phases (download, parse/split and load) are kept
   intentionally separate, at the moment they are specific to downloading from
   FTP, splitting one move per chunk, and loading account moves only. Future
   versions should make that more generic and extensible. Your contributions and
   thoughts are welcome!
-* There is a false positive that makes the travis run fail. I reported it as
-  https://github.com/OCA/maintainer-quality-tools/issues/43#issuecomment-54127125
+* I disabled a test because of a false positive with travis. See:
+  - https://github.com/OCA/maintainer-quality-tools/issues/43#issuecomment-54127125
+  - https://github.com/camptocamp/connector-file/issues/2
 * I would like this to be included under the OCA umbrella, but that is a bit
   early since there are similar efforts around.
 
@@ -51,6 +53,7 @@ jobs, Synchronizers and Units:
 # Changes
 
 ## v1.0
+
 * This release represents the moment when the project was migrated from
   Launchpad to Github.
 * Functionality is complete, but limited to move lines from CSV files over FTP.
