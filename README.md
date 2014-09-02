@@ -30,3 +30,17 @@ jobs, Synchronizers and Units:
   to reconstruct the corresponding piece of the original file (that could
   be unwieldy). Here, each job handles a file.
 * The loading of each chunk in a Journal Entry. Each job handles a Chunk.
+
+# Contributors
+
+* Leonardo Pistone (@lepistone) is the main author of the code
+* Nicolas Bessi (@nbessi) provided the initial design, and helped during
+  development
+
+# Changes
+
+## v1.0
+* This release represents the moment when the project was migrated from
+  Launchpad to Github.
+* Functionality is complete, but limited to move lines from CSV files over FTP.
+* It deserves 1.0 because it has been in production.
