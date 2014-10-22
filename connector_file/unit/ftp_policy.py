@@ -84,7 +84,7 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             ftp_user,
             ftp_password,
         ) as host:
-            return host.open(data_file_name).read()
+            return host.open(data_file_name, 'rb').read()
 
     def get_content(self, data_file_name):
         """Return the raw content of the file."""
