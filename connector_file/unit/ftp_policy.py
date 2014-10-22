@@ -104,7 +104,7 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             ftp_password,
         ) as host:
             with host.open(hash_file_name) as f:
-                return f.read().rstrip('\r\n')
+                return f.read()[:32]
 
     def get_hash(self, hash_file_name):
         """Return the external hash of the file."""
