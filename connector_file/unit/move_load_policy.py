@@ -74,7 +74,7 @@ class MoveLoadPolicy(LoadPolicy):
         """
 
         if load_result['ids']:
-            chunk_b.write({
+            chunk_b_obj.write(s.cr, s.uid, chunk_b.id, {
                 'move_id': load_result['ids'][0],
                 'sync_date': datetime.now().strftime(
                     DEFAULT_SERVER_DATETIME_FORMAT
@@ -82,7 +82,7 @@ class MoveLoadPolicy(LoadPolicy):
                 'load_state': 'done',
             }, context=s.context)
         else:
-            chunk_b.write({
+            chunk_b_obj.write(s.cr, s.uid, chunk_b.id, {
                 'load_state': 'failed',
                 'exc_info': (
                     u'Error during load() of the account.move.\n{0}'.format(
