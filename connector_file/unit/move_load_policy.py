@@ -80,7 +80,7 @@ class MoveLoadPolicy(LoadPolicy):
                     DEFAULT_SERVER_DATETIME_FORMAT
                 ),
                 'load_state': 'done',
-            }, context=s.context)
+            })
         else:
             chunk_b.write({
                 'load_state': 'failed',
@@ -89,4 +89,4 @@ class MoveLoadPolicy(LoadPolicy):
                         load_result['messages']
                     )
                 )
-            }, context=s.context)
+            })
