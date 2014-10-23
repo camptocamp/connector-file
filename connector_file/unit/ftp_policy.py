@@ -104,6 +104,10 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             ftp_password,
         ) as host:
             with host.open(hash_file_name) as f:
+                # A md5 hex digest is always 32 characters.
+                # The md5 file can be the produced by different
+                # means (such as the md5sum program) as long
+                # as the hash is at the beginning of the file.
                 return f.read()[:32]
 
     def get_hash(self, hash_file_name):
