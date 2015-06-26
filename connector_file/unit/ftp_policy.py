@@ -84,7 +84,7 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             ftp_user,
             ftp_password,
         ) as host:
-            return host.open(data_file_name).read()
+            return host.open(data_file_name, 'rb').read()
 
     def get_content(self, data_file_name):
         """Return the raw content of the file."""
@@ -104,7 +104,11 @@ class FTPFileGetterPolicy(FileGetterPolicy):
             ftp_password,
         ) as host:
             with host.open(hash_file_name) as f:
-                return f.read().rstrip('\r\n')
+                # A md5 hex digest is always 32 characters.
+                # The md5 file can be the produced by different
+                # means (such as the md5sum program) as long
+                # as the hash is at the beginning of the file.
+                return f.read()[:32]
 
     def get_hash(self, hash_file_name):
         """Return the external hash of the file."""
